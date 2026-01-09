@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}Predict Content{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; box-shadow: 0 15px 35px rgba(155, 89, 182, 0.4); animation: pulse 2s ease-in-out infinite;">
+            <i class="fab fa-youtube"></i>
+        </div>
+        <h2 style="margin: 0; color: #9b59b6;">YouTube Content Detection</h2>
+        <p style="color: #777; margin-top: 0.5rem;">AI-powered analysis to detect inappropriate content</p>
+    </div>
+    
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .prediction-result {
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: scaleIn 0.6s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .input-hint {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.3rem;
+            display: block;
+        }
+        
+        .field-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .field-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    
+    {% if objs %}
+    <div class="prediction-result" style="background: {% if objs == 'True Content' %}linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border: 2px solid #28a745{% else %}linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border: 2px solid #dc3545{% endif %};">
+        <div class="result-icon" style="color: {% if objs == 'True Content' %}#28a745{% else %}#dc3545{% endif %};">
+            {% if objs == 'True Content' %}
+            <i class="fas fa-check-circle"></i>
+            {% else %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {% endif %}
+        </div>
+        <h3 style="margin: 0; font-size: 2rem; color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %};">
+            {{ objs }}
+        </h3>
+        <p style="font-size: 1.1rem; margin: 1rem 0 2rem; color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %};">
+            {% if objs == 'True Content' %}
+            <i class="fas fa-shield-alt"></i> This content appears to be appropriate for viewing
+            {% else %}
+            <i class="fas fa-ban"></i> This content may contain inappropriate material
+            {% endif %}
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">
+                <i class="fas fa-redo"></i> Analyze Another Video
+            </a>
+            <a href="{% url 'ViewYourProfile' %}" class="btn" style="background: #6c757d;">
+                <i class="fas fa-user"></i> Back to Profile
+            </a>
+        </div>
+    </div>
+    {% else %}
+    
+    <div style="padding: 1.5rem; background: linear-gradient(135deg, #e8f4f8 0%, #d1e7f3 100%); border-radius: 12px; border-left: 4px solid #17a2b8; margin-bottom: 2rem;">
+        <p style="margin: 0; color: #0c5460;">
+            <i class="fas fa-info-circle"></i> <strong>How it works:</strong> Our AI analyzes video content, metadata, and engagement metrics to detect potentially inappropriate material.
+        </p>
+    </div>
+    
+    <form method="POST" id="predictionForm">
+        {% csrf_token %}
+        
+        <h4 style="margin-bottom: 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
+            <i class="fas fa-video"></i> Video Information
+        </h4>
+        
+        <div class="field-group">
+            <div class="form-group">
+                <label for="video_id"><i class="fab fa-youtube"></i> Video ID</label>
+                <input type="text" id="video_id" name="video_id" placeholder="dQw4w9WgXcQ">
+                <span class="input-hint">From YouTube URL after v=</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="Video_link"><i class="fas fa-link"></i> Video Link</label>
+                <input type="text" id="Video_link" name="Video_link" placeholder="https://www.youtube.com/watch?v=...">
+                <span class="input-hint">Full YouTube URL</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="title"><i class="fas fa-heading"></i> Video Title</label>
+            <input type="text" id="title" name="title" placeholder="Enter the video title">
+        </div>
+        
+        <div class="field-group">
+            <div class="form-group">
+                <label for="channel_title"><i class="fas fa-user-circle"></i> Channel Name</label>
+                <input type="text" id="channel_title" name="channel_title" placeholder="Channel name">
+            </div>
+            
+            <div class="form-group">
+                <label for="category"><i class="fas fa-tag"></i> Category</label>
+                <select id="category" name="category">
+                    <option value="">Select Category</option>
+                    <option value="Education">📚 Education</option>
+                    <option value="Entertainment">🎬 Entertainment</option>
+                    <option value="Gaming">🎮 Gaming</option>
+                    <option value="Music">🎵 Music</option>
+                    <option value="News">📰 News</option>
+                    <option value="Sports">⚽ Sports</option>
+                    <option value="Animation">🎨 Animation</option>
+                    <option value="Kids">👶 Kids</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="content"><i class="fas fa-file-alt"></i> Content Description *</label>
+            <textarea id="content" name="content" rows="6" required placeholder="Enter video description, transcript, or key content details for analysis..."></textarea>
+            <span class="input-hint"><i class="fas fa-asterisk" style="color: #e74c3c; font-size: 0.6rem;"></i> Required field - This is the primary text analyzed by our AI</span>
+        </div>
+        
+        <h4 style="margin: 2rem 0 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
+            <i class="fas fa-chart-line"></i> Engagement Metrics
+        </h4>
+        
+        <div class="field-group">
+            <div class="form-group">
+                <label for="views"><i class="fas fa-eye"></i> Views</label>
+                <input type="number" id="views" name="views" value="0" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="views_per_day"><i class="fas fa-chart-area"></i> Views Per Day</label>
+                <input type="number" id="views_per_day" name="views_per_day" value="0" min="0">
+            </div>
+        </div>
+        
+        <div class="field-group">
+            <div class="form-group">
+                <label for="likes"><i class="fas fa-thumbs-up"></i> Likes</label>
+                <input type="number" id="likes" name="likes" value="0" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="dislikes"><i class="fas fa-thumbs-down"></i> Dislikes</label>
+                <input type="number" id="dislikes" name="dislikes" value="0" min="0">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="comment_count"><i class="fas fa-comments"></i> Comment Count</label>
+            <input type="number" id="comment_count" name="comment_count" value="0" min="0">
+        </div>
+        
+        <h4 style="margin: 2rem 0 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
+            <i class="fas fa-calendar-alt"></i> Publication Details
+        </h4>
+        
+        <div class="field-group">
+            <div class="form-group">
+                <label for="publish_date"><i class="fas fa-calendar"></i> Publish Date</label>
+                <input type="date" id="publish_date" name="publish_date">
+            </div>
+            
+            <div class="form-group">
+                <label for="publish_time"><i class="fas fa-clock"></i> Publish Time</label>
+                <input type="time" id="publish_time" name="publish_time">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.2rem; margin-top: 2rem; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;">
+            <i class="fas fa-brain"></i> Analyze Content with AI
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
+        <a href="{% url 'ViewYourProfile' %}" style="color: #777; text-decoration: none;">
+            <i class="fas fa-arrow-left"></i> Back to Profile
+        </a>
+    </div>
+    
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 12px;">
+        <h5 style="margin-top: 0; color: #495057;"><i class="fas fa-lightbulb"></i> Tips for Best Results:</h5>
+        <ul style="margin: 0; padding-left: 1.5rem; color: #666;">
+            <li>Provide detailed content description for accurate analysis</li>
+            <li>Include video transcripts when available</li>
+            <li>Fill in as many fields as possible for comprehensive evaluation</li>
+            <li>The AI analyzes text content using advanced NLP techniques</li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const form = document.getElementById('predictionForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Content...';
+            btn.disabled = true;
+        });
+    }
+</script>
+{% endblock %}

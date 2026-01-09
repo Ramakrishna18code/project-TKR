@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Model Training Results{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Machine Learning Model Accuracy</h2>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{% url 'View_Remote_Users' %}" class="btn">View Users</a>
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="btn">View Predictions</a>
+        <a href="{% url 'charts1' 'bar' %}" class="btn">View Accuracy Chart</a>
+        <a href="{% url 'index' %}" class="btn" style="background-color: #e74c3c;">Logout</a>
+    </div>
+    
+    <div style="background-color: #d4edda; padding: 1rem; border-radius: 5px; margin-bottom: 2rem;">
+        <p style="text-align: center; margin: 0; color: #155724;">
+            <strong>✓ Model Training Completed Successfully!</strong>
+        </p>
+    </div>
+    
+    {% if objs %}
+    <table style="max-width: 600px; margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Algorithm</th>
+                <th>Accuracy (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in objs %}
+            <tr>
+                <td><strong>{{ obj.names }}</strong></td>
+                <td>{{ obj.ratio }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center;">Training model...</p>
+    {% endif %}
+</div>
+{% endblock %}

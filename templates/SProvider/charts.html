@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Charts{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Prediction Ratio - {{ chart_type|title }} Chart</h2>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="btn">Back to Ratios</a>
+        <a href="{% url 'charts' 'bar' %}" class="btn">Bar Chart</a>
+        <a href="{% url 'charts' 'pie' %}" class="btn">Pie Chart</a>
+    </div>
+    
+    <div style="max-width: 800px; margin: 2rem auto;">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // @ts-nocheck
+    const ctx = document.getElementById('myChart');
+    const labels = [{% for item in form %}'{{ item.names }}',{% endfor %}];
+    const data = [{% for item in form %}{{ item.dcount|default:0 }},{% endfor %}];
+    
+    new Chart(ctx, {
+        type: '{{ chart_type }}',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Prediction Ratio (%)',
+                data: data,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Content Detection Ratio'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

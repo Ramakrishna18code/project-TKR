@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}View Remote Users{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Registered Users</h2>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="btn">View Predictions</a>
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="btn">View Ratios</a>
+        <a href="{% url 'train_model' %}" class="btn">Train Model</a>
+        <a href="{% url 'index' %}" class="btn" style="background-color: #e74c3c;">Logout</a>
+    </div>
+    
+    {% if objects %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in objects %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phoneno }}</td>
+                <td>{{ user.city }}</td>
+                <td>{{ user.state }}</td>
+                <td>{{ user.country }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center;">No users registered yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

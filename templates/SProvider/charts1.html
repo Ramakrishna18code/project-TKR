@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Accuracy Charts{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Model Accuracy - {{ chart_type|title }} Chart</h2>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{% url 'train_model' %}" class="btn">Back to Training</a>
+        <a href="{% url 'charts1' 'bar' %}" class="btn">Bar Chart</a>
+        <a href="{% url 'charts1' 'line' %}" class="btn">Line Chart</a>
+    </div>
+    
+    <div style="max-width: 800px; margin: 2rem auto;">
+        <canvas id="accuracyChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // @ts-nocheck
+    const ctx = document.getElementById('accuracyChart');
+    const labels = [{% for item in form %}'{{ item.names }}',{% endfor %}];
+    const data = [{% for item in form %}{{ item.dcount|default:0 }},{% endfor %}];
+    
+    new Chart(ctx, {
+        type: '{{ chart_type }}',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Accuracy (%)',
+                data: data,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Machine Learning Model Accuracy Comparison'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

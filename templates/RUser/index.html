@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - YouTube Content Detection{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem; animation: bounce 2s ease-in-out infinite;">
+            🎬🤖
+        </div>
+        <h1 style="color: #667eea; font-size: 2.5rem; margin-bottom: 1rem;">
+            Welcome to YouTube Content Detection AI
+        </h1>
+        <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+            Advanced AI-powered system using <strong>EfficientNet-B7</strong> and <strong>BiLSTM</strong> 
+            for detecting inappropriate content in YouTube videos with <span style="color: #667eea; font-weight: bold;">95.66% accuracy</span>
+        </p>
+    </div>
+    
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .access-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .access-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .access-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        .access-card h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            -webkit-text-fill-color: white;
+        }
+        
+        .access-card .btn {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .access-card .btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+        }
+        
+        .admin-card {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+    </style>
+    
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3>AI-Powered Analysis</h3>
+            <p>Deep learning models analyze video content with precision</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Real-Time Detection</h3>
+            <p>Instant classification of appropriate and inappropriate content</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Advanced Analytics</h3>
+            <p>Comprehensive dashboards and visualization charts</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Child Safety</h3>
+            <p>Protecting young viewers from harmful content</p>
+        </div>
+    </div>
+    
+    <div class="access-section">
+        <div class="access-card">
+            <h2><i class="fas fa-user"></i> User Access</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.9;">Login or register to analyze YouTube content</p>
+            <a href="{% url 'login' %}" class="btn"><i class="fas fa-sign-in-alt"></i> User Login</a>
+            <a href="{% url 'Register1' %}" class="btn"><i class="fas fa-user-plus"></i> Register Now</a>
+        </div>
+        
+        <div class="access-card admin-card">
+            <h2><i class="fas fa-user-shield"></i> Admin Access</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.9;">Access dashboard, analytics, and insights</p>
+            <a href="{% url 'serviceproviderlogin' %}" class="btn"><i class="fas fa-lock"></i> Admin Login</a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 4rem; padding: 2.5rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 20px; border-left: 5px solid #667eea;">
+        <h3 style="color: #667eea; margin-bottom: 1.5rem;"><i class="fas fa-info-circle"></i> About the Technology</h3>
+        <p style="margin-bottom: 1rem; color: #555; line-height: 1.8;">
+            Our cutting-edge system leverages state-of-the-art deep learning techniques to ensure a safer viewing experience for children:
+        </p>
+        <ul style="list-style: none; padding-left: 0;">
+            <li style="margin: 1rem 0; padding-left: 2rem; position: relative;">
+                <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                <strong>EfficientNet-B7:</strong> Advanced CNN for spatial feature extraction from video frames
+            </li>
+            <li style="margin: 1rem 0; padding-left: 2rem; position: relative;">
+                <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                <strong>BiLSTM Networks:</strong> Captures temporal sequences and contextual patterns
+            </li>
+            <li style="margin: 1rem 0; padding-left: 2rem; position: relative;">
+                <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                <strong>Attention Mechanism:</strong> Focuses on critical frames for enhanced accuracy
+            </li>
+            <li style="margin: 1rem 0; padding-left: 2rem; position: relative;">
+                <span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">✓</span>
+                <strong>Ensemble Methods:</strong> Multiple ML algorithms working together for robust predictions
+            </li>
+        </ul>
+        
+        <div style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 10px; text-align: center;">
+            <h4 style="color: #2ecc71; margin-bottom: 1rem;">🎯 Achieved Accuracy</h4>
+            <div style="font-size: 3rem; font-weight: bold; color: #667eea;">95.66%</div>
+            <p style="color: #777; margin-top: 0.5rem;">on 1,860 minutes of annotated video content</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

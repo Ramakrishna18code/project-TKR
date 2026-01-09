@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Content Ratio{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Prediction Ratio Analysis</h2>
+    
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="{% url 'View_Remote_Users' %}" class="btn">View Users</a>
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="btn">View Predictions</a>
+        <a href="{% url 'charts' 'bar' %}" class="btn">View Bar Chart</a>
+        <a href="{% url 'charts' 'pie' %}" class="btn">View Pie Chart</a>
+        <a href="{% url 'index' %}" class="btn" style="background-color: #e74c3c;">Logout</a>
+    </div>
+    
+    {% if objs %}
+    <table style="max-width: 600px; margin: 2rem auto;">
+        <thead>
+            <tr>
+                <th>Content Type</th>
+                <th>Ratio (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in objs %}
+            <tr>
+                <td><strong>{{ obj.names }}</strong></td>
+                <td>{{ obj.ratio|floatformat:2 }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center;">No data available. Please make some predictions first.</p>
+    {% endif %}
+</div>
+{% endblock %}
