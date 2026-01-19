@@ -1,498 +1,251 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
 
-{% block title %}Predict Content{% endblock %}
+{% block title %}Content Analysis{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; box-shadow: 0 15px 35px rgba(155, 89, 182, 0.4); animation: pulse 2s ease-in-out infinite;">
-            <i class="fab fa-youtube"></i>
-        </div>
-        <h2 style="margin: 0; color: #ffffff;">YouTube Content Detection</h2>
-        <p style="color: #d0d0d0; margin-top: 0.5rem;">AI-powered analysis to detect inappropriate content</p>
-    </div>
-    
-    <style>
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .prediction-result {
-            padding: 3rem 2rem;
-            border-radius: 15px;
-            text-align: center;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            animation: scaleIn 0.6s ease-out;
-        }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .input-hint {
-            font-size: 0.85rem;
-            color: #b0b0b0;
-            margin-top: 0.3rem;
-            display: block;
-        }
-        
-        .field-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .field-group {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<div class="card" style="max-width: 700px; margin: 2rem auto;">
     
     {% if error %}
-    <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border-radius: 12px; border-left: 4px solid #dc3545; margin-bottom: 2rem; animation: slideIn 0.5s ease-out;">
-        <p style="margin: 0; color: #721c24;">
-            <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> {{ error }}
+    <div class="alert alert-error" style="margin-bottom: 2rem;">{{ error }}</div>
+    {% endif %}
+    
+    {% if objs %}
+    <!-- RESULT PAGE -->
+    <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e5e5;">
+        <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">
+            {% if objs == 'True Content' %}Content Acceptable{% else %}Content Flagged{% endif %}
+        </h1>
+        <p style="color: #737373; font-size: 0.9375rem; margin-bottom: 0;">
+            {% if objs == 'True Content' %}
+            This content meets safety standards for general viewing.
+            {% else %}
+            This content contains potentially inappropriate material.
+            {% endif %}
+        </p>
+    </div>
+    
+    {% if video_data.reason %}
+    <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e5e5;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: #1a1a1a;">Classification Basis</h3>
+        <p style="color: #404040; font-size: 0.9375rem; line-height: 1.6; margin: 0;">
+            {{ video_data.reason }}
         </p>
     </div>
     {% endif %}
     
-    {% if objs %}
-    <div class="prediction-result" style="background: {% if objs == 'True Content' %}linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border: 2px solid #28a745{% else %}linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border: 2px solid #dc3545{% endif %};">
-        <div class="result-icon" style="color: {% if objs == 'True Content' %}#28a745{% else %}#dc3545{% endif %};">
-            {% if objs == 'True Content' %}
-            <i class="fas fa-check-circle"></i>
-            {% else %}
-            <i class="fas fa-exclamation-triangle"></i>
-            {% endif %}
-        </div>
-        <h3 style="margin: 0; font-size: 2rem; color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %};">
-            {{ objs }}
-        </h3>
-        <p style="font-size: 1.1rem; margin: 1rem 0 0.5rem; color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %};">
-            {% if objs == 'True Content' %}
-            <i class="fas fa-shield-alt"></i> This content appears to be appropriate for viewing
-            {% else %}
-            <i class="fas fa-ban"></i> This content may contain inappropriate material
-            {% endif %}
-        </p>
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
+        <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">Analyze Another</a>
+        <a href="{% url 'ViewYourProfile' %}" class="btn btn-secondary">Return to Dashboard</a>
+    </div>
+    
+    <!-- SECONDARY DETAILS (COLLAPSED BY DEFAULT) -->
+    <details style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e5e5;">
+        <summary style="cursor: pointer; font-weight: 500; color: #1a1a1a; font-size: 0.9375rem; user-select: none;">
+            Show Video Details
+        </summary>
         
-        {% if video_data.reason %}
-        <div style="margin: 1rem 0; padding: 1rem; background: {% if objs == 'True Content' %}rgba(212, 237, 218, 0.5){% else %}rgba(248, 215, 218, 0.5){% endif %}; border-radius: 8px; border-left: 4px solid {% if objs == 'True Content' %}#28a745{% else %}#dc3545{% endif %};">
-            <strong style="color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %}; font-size: 0.95rem;">
-                <i class="fas fa-info-circle"></i> Detection Analysis:
-            </strong>
-            <p style="margin: 0.5rem 0 0 0; color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %}; font-size: 0.9rem;">
-                {{ video_data.reason }}
-            </p>
-            {% if video_data.risk_score %}
-            <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 0.85rem; color: #666;">Risk Score:</span>
-                <div style="flex: 1; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
-                    <div style="height: 100%; width: {{ video_data.risk_score|add:10|floatformat:0 }}%; background: {% if video_data.risk_score >= 5 %}#dc3545{% elif video_data.risk_score >= 3 %}#fd7e14{% elif video_data.risk_score >= 1 %}#ffc107{% else %}#28a745{% endif %}; transition: width 0.3s;"></div>
-                </div>
-                <span style="font-size: 0.85rem; font-weight: bold; color: {% if video_data.risk_score >= 5 %}#dc3545{% elif video_data.risk_score >= 1 %}#ffc107{% else %}#28a745{% endif %};">
-                    {{ video_data.risk_score }}
-                </span>
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
-        
-        {% if video_data %}
-        <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255, 255, 255, 0.7); border-radius: 12px; text-align: left;">
-            <h4 style="margin: 0 0 1rem 0; color: #333; text-align: center; font-size: 1.3rem;">
-                <i class="fab fa-youtube" style="color: #ff0000;"></i> Video Analysis Report
-            </h4>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div style="padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <i class="fas fa-heading" style="color: #9b59b6; font-size: 1.2rem;"></i>
-                        <strong style="color: #555;">Title:</strong>
-                    </div>
-                    <p style="margin: 0; color: #333; word-break: break-word;">{{ video_data.title|default:"N/A" }}</p>
-                </div>
-                
-                <div style="padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <i class="fas fa-user-circle" style="color: #9b59b6; font-size: 1.2rem;"></i>
-                        <strong style="color: #555;">Channel:</strong>
-                    </div>
-                    <p style="margin: 0; color: #333;">{{ video_data.channel|default:"N/A" }}</p>
-                </div>
-            </div>
-            
-            <h5 style="margin: 1.5rem 0 1rem 0; color: #333; text-align: center; border-top: 2px solid #e0e0e0; padding-top: 1rem;">
-                <i class="fas fa-chart-bar"></i> Engagement Metrics
-            </h5>
-            
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                <div style="padding: 1.2rem; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);">
-                    <i class="fas fa-eye" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: white; margin: 0.5rem 0;">
-                        {{ video_data.views|format_number }}
-                    </div>
-                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem;">Views</div>
-                </div>
-                
-                <div style="padding: 1.2rem; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);">
-                    <i class="fas fa-thumbs-up" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: white; margin: 0.5rem 0;">
-                        {{ video_data.likes|format_number }}
-                    </div>
-                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem;">Likes</div>
-                </div>
-                
-                <div style="padding: 1.2rem; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
-                    <i class="fas fa-thumbs-down" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: white; margin: 0.5rem 0;">
-                        {{ video_data.dislikes|format_number }}
-                    </div>
-                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem;">Dislikes</div>
-                </div>
-                
-                <div style="padding: 1.2rem; background: linear-gradient(135deg, #f39c12 0%, #d68910 100%); border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);">
-                    <i class="fas fa-comments" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: white; margin: 0.5rem 0;">
-                        {{ video_data.comments|format_number }}
-                    </div>
-                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem;">Comments</div>
-                </div>
-            </div>
-            
-            <div style="margin-top: 1.5rem; padding: 1rem; background: {% if objs == 'True Content' %}linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%){% else %}linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%){% endif %}; border-radius: 8px; text-align: center; border: 2px solid {% if objs == 'True Content' %}#28a745{% else %}#dc3545{% endif %};">
-                <strong style="color: {% if objs == 'True Content' %}#155724{% else %}#721c24{% endif %}; font-size: 1.1rem;">
-                    <i class="fas fa-certificate"></i> Confidence Level: {{ video_data.confidence|default:"High" }}
-                </strong>
-            </div>
-            
-            {% if not video_data.api_used %}
-            <div style="margin-top: 1rem; padding: 0.8rem; background: #fff3cd; border-radius: 8px; text-align: center; border-left: 4px solid #ffc107;">
-                <small style="color: #856404;">
-                    <i class="fas fa-info-circle"></i> Note: Manual data used. Configure YouTube API for automatic analysis.
-                </small>
-            </div>
-            {% endif %}
+        <div style="margin-top: 1.5rem;">
+            <table style="margin-top: 0;">
+                <tbody>
+                    {% if video_data.title %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373; width: 140px;">Video Title</td>
+                        <td>{{ video_data.title }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.channel %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Channel</td>
+                        <td>{{ video_data.channel }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.views %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Views</td>
+                        <td>{{ video_data.views|format_number }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.likes %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Likes</td>
+                        <td>{{ video_data.likes|format_number }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.dislikes %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Dislikes</td>
+                        <td>{{ video_data.dislikes|format_number }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.comments %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Comments</td>
+                        <td>{{ video_data.comments|format_number }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if video_data.confidence %}
+                    <tr>
+                        <td style="font-weight: 500; color: #737373;">Confidence</td>
+                        <td>{{ video_data.confidence }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
             
             {% if video_data.video_link %}
-            <div style="margin-top: 1rem; text-align: center;">
-                <a href="{{ video_data.video_link }}" target="_blank" class="btn" style="background: #ff0000; color: white;">
-                    <i class="fab fa-youtube"></i> Watch Video on YouTube
+            <div style="margin-top: 1.5rem;">
+                <a href="{{ video_data.video_link }}" target="_blank" class="btn btn-secondary" style="font-size: 0.875rem;">
+                    View on YouTube
                 </a>
             </div>
             {% endif %}
         </div>
-        {% endif %}
-        
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-            <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">
-                <i class="fas fa-redo"></i> Analyze Another Video
-            </a>
-            <a href="{% url 'ViewYourProfile' %}" class="btn" style="background: #6c757d;">
-                <i class="fas fa-user"></i> Back to Profile
-            </a>
-        </div>
-    </div>
+    </details>
+    
     {% else %}
+    <!-- INPUT FORM -->
+    <h2 style="margin-bottom: 0.5rem;">Analyze Video Content</h2>
+    <p style="font-size: 0.875rem; color: #737373; margin-bottom: 2rem;">
+        Enter a YouTube video URL to check for inappropriate content
+    </p>
     
-    <div style="padding: 1.5rem; background: linear-gradient(135deg, #e8f4f8 0%, #d1e7f3 100%); border-radius: 12px; border-left: 4px solid #17a2b8; margin-bottom: 2rem;">
-        <p style="margin: 0; color: #0c5460; font-size: 1.1rem; font-weight: bold;">
-            <i class="fas fa-info-circle"></i> <strong>How to Use:</strong>
-        </p>
-        <ol style="margin: 0.5rem 0 0 1.5rem; color: #0c5460;">
-            <li><strong>Paste your YouTube video link below</strong></li>
-            <li><strong>Wait 1-2 seconds</strong> - the system will automatically try to fetch video data</li>
-            <li>If auto-fetch works, all fields (title, views, likes, etc.) will be <strong>automatically filled</strong> ✨</li>
-            <li>If auto-fetch fails, manually enter the data from YouTube</li>
-            <li>Click "Analyze Content with AI" to see results</li>
-        </ol>
-        <p style="margin: 0.5rem 0 0 0; color: #0c5460; font-size: 0.9rem; font-style: italic;">
-            <i class="fas fa-lightbulb"></i> <strong>Pro Tip:</strong> Configure YouTube API in config.py for automatic data fetching!
-        </p>
-    </div>
-    
-    <form method="POST" id="predictionForm">
+    <form method="POST">
         {% csrf_token %}
         
-        <h4 style="margin-bottom: 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
-            <i class="fas fa-video"></i> Video Information
-        </h4>
-        
-        <div style="padding: 1.2rem; background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%); border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 1.5rem;">
-            <div class="form-group" style="margin: 0;">
-                <label for="Video_link" style="font-size: 1.1rem; font-weight: bold;"><i class="fas fa-link"></i> YouTube Video Link *</label>
-                <input type="text" id="Video_link" name="Video_link" required placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="border: 2px solid #ff9800;">
-                <span class="input-hint"><i class="fas fa-asterisk" style="color: #e74c3c; font-size: 0.6rem;"></i> Required - Paste YouTube URL and wait for auto-fill ⚡</span>
-            </div>
+        <div class="form-group">
+            <label for="Video_link">YouTube Video URL</label>
+            <input type="text" id="Video_link" name="Video_link" required placeholder="https://www.youtube.com/watch?v=...">
         </div>
         
-        <div style="padding: 1rem; background: #e8f5e9; border-radius: 10px; margin-bottom: 1.5rem; border: 2px solid #4caf50;">
-            <p style="margin: 0; color: #2e7d32; text-align: center; font-size: 1rem; font-weight: bold;">
-                <i class="fas fa-magic"></i> Fields below will auto-fill after pasting YouTube link (if API is configured)
-            </p>
+        <div class="form-group">
+            <label for="video_id">Video ID</label>
+            <input type="text" id="video_id" name="video_id" placeholder="Extracted from URL">
         </div>
         
-        <div class="field-group">
-            <div class="form-group">
-                <label for="video_id"><i class="fab fa-youtube"></i> Video ID</label>
-                <input type="text" id="video_id" name="video_id" placeholder="dQw4w9WgXcQ">
-                <span class="input-hint">From YouTube URL after v= (auto-filled)</span>
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="title">Video Title</label>
+                <input type="text" id="title" name="title">
             </div>
             
-            <div class="form-group">
-                <label for="category"><i class="fas fa-tag"></i> Category</label>
-                <select id="category" name="category">
-                    <option value="">Select Category</option>
-                    <option value="Education">📚 Education</option>
-                    <option value="Entertainment">🎬 Entertainment</option>
-                    <option value="Gaming">🎮 Gaming</option>
-                    <option value="Music">🎵 Music</option>
-                    <option value="News">📰 News</option>
-                    <option value="Sports">⚽ Sports</option>
-                    <option value="Animation">🎨 Animation</option>
-                    <option value="Kids">👶 Kids</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="field-group">
-            <div class="form-group">
-                <label for="title"><i class="fas fa-heading"></i> Video Title (Auto-fills)</label>
-                <input type="text" id="title" name="title" placeholder="e.g., Never Gonna Give You Up">
-                <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled from YouTube</span>
-            </div>
-            
-            <div class="form-group">
-                <label for="channel_title"><i class="fas fa-user-circle"></i> Channel Name (Auto-fills)</label>
-                <input type="text" id="channel_title" name="channel_title" placeholder="e.g., Rick Astley">
-                <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled from YouTube</span>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="channel_title">Channel Name</label>
+                <input type="text" id="channel_title" name="channel_title">
             </div>
         </div>
         
         <div class="form-group">
-            <label for="content"><i class="fas fa-file-alt"></i> Content Description (Auto-fills)</label>
-            <textarea id="content" name="content" rows="4" placeholder="Will be automatically filled with video description..."></textarea>
-            <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled - This is the main text analyzed by our AI</span>
-        </div>
-        
-        <h4 style="margin: 2rem 0 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
-            <i class="fas fa-chart-line"></i> Engagement Metrics
-        </h4>
-        
-        <div style="padding: 1rem; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 10px; border-left: 4px solid #4caf50; margin-bottom: 1.5rem;">
-            <p style="margin: 0; color: #2e7d32; font-weight: bold;">
-                <i class="fas fa-check-circle"></i> <strong>Auto-Fill:</strong> These fields will be automatically populated when you paste the YouTube link!
-            </p>
-            <p style="margin: 0.5rem 0 0 0; color: #2e7d32; font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> If auto-fill doesn't work, manually enter the numbers from the YouTube video page
-            </p>
-        </div>
-        
-        <div class="field-group">
-            <div class="form-group">
-                <label for="views"><i class="fas fa-eye"></i> Views (Auto-fills)</label>
-                <input type="number" id="views" name="views" placeholder="e.g., 1000000" min="0">
-                <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled from YouTube</span>
-            </div>
-            
-            <div class="form-group">
-                <label for="views_per_day"><i class="fas fa-chart-area"></i> Views Per Day</label>
-                <input type="number" id="views_per_day" name="views_per_day" placeholder="e.g., 5000" min="0">
-            </div>
-        </div>
-        
-        <div class="field-group">
-            <div class="form-group">
-                <label for="likes"><i class="fas fa-thumbs-up"></i> Likes (Auto-fills)</label>
-                <input type="number" id="likes" name="likes" placeholder="e.g., 50000" min="0">
-                <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled from YouTube</span>
-            </div>
-            
-            <div class="form-group">
-                <label for="dislikes"><i class="fas fa-thumbs-down"></i> Dislikes (Auto-fills)</label>
-                <input type="number" id="dislikes" name="dislikes" placeholder="e.g., 1000" min="0">
-                <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled (if available)</span>
-            </div>
+            <label for="content">Content Description</label>
+            <textarea id="content" name="content" rows="3"></textarea>
         </div>
         
         <div class="form-group">
-            <label for="comment_count"><i class="fas fa-comments"></i> Comment Count (Auto-fills)</label>
-            <input type="number" id="comment_count" name="comment_count" placeholder="e.g., 25000" min="0">
-            <span class="input-hint" style="color: #4caf50;">⚡ Auto-filled from YouTube</span>
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                <option value="">Select Category</option>
+                <option value="Education">Education</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Music">Music</option>
+                <option value="News">News</option>
+                <option value="Sports">Sports</option>
+                <option value="Animation">Animation</option>
+                <option value="Kids">Kids</option>
+            </select>
         </div>
         
-        <h4 style="margin: 2rem 0 1rem; color: #495057; border-bottom: 2px solid #e9ecef; padding-bottom: 0.5rem;">
-            <i class="fas fa-calendar-alt"></i> Publication Details
-        </h4>
-        
-        <div class="field-group">
-            <div class="form-group">
-                <label for="publish_date"><i class="fas fa-calendar"></i> Publish Date</label>
-                <input type="date" id="publish_date" name="publish_date">
+        <details style="margin-bottom: 1.5rem;">
+            <summary style="cursor: pointer; font-weight: 500; color: #737373; font-size: 0.875rem; user-select: none; margin-bottom: 1rem;">
+                Additional Metrics (Optional)
+            </summary>
+            
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="views">Views</label>
+                    <input type="number" id="views" name="views" min="0">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="likes">Likes</label>
+                    <input type="number" id="likes" name="likes" min="0">
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="publish_time"><i class="fas fa-clock"></i> Publish Time</label>
-                <input type="time" id="publish_time" name="publish_time">
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="dislikes">Dislikes</label>
+                    <input type="number" id="dislikes" name="dislikes" min="0">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="comment_count">Comments</label>
+                    <input type="number" id="comment_count" name="comment_count" min="0">
+                </div>
             </div>
-        </div>
+            
+            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="publish_date">Publish Date</label>
+                    <input type="date" id="publish_date" name="publish_date">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="views_per_day">Views Per Day</label>
+                    <input type="number" id="views_per_day" name="views_per_day" min="0">
+                </div>
+            </div>
+        </details>
         
-        <button type="submit" class="btn" style="width: 100%; font-size: 1.2rem; margin-top: 2rem; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;">
-            <i class="fas fa-brain"></i> Analyze Content with AI
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Analyze Content
         </button>
     </form>
     
-    <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
-        <a href="{% url 'ViewYourProfile' %}" style="color: #777; text-decoration: none;">
-            <i class="fas fa-arrow-left"></i> Back to Profile
-        </a>
-    </div>
-    
-    <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; border: 2px solid #9b59b6;">
-        <h5 style="margin-top: 0; color: #9b59b6;"><i class="fas fa-question-circle"></i> Example - How to Fill the Form:</h5>
-        <div style="padding: 1rem; background: white; border-radius: 8px; margin-bottom: 1rem;">
-            <p style="margin: 0 0 0.5rem 0; color: #333; font-weight: bold;">📝 Sample YouTube Video Data:</p>
-            <ul style="margin: 0; padding-left: 1.5rem; color: #666; line-height: 1.8;">
-                <li><strong>Video Link:</strong> https://www.youtube.com/watch?v=dQw4w9WgXcQ</li>
-                <li><strong>Title:</strong> Never Gonna Give You Up</li>
-                <li><strong>Channel:</strong> Rick Astley</li>
-                <li><strong>Description:</strong> Official music video for Never Gonna Give You Up...</li>
-                <li><strong>Views:</strong> 1000000</li>
-                <li><strong>Likes:</strong> 50000</li>
-                <li><strong>Dislikes:</strong> 1000</li>
-                <li><strong>Comments:</strong> 25000</li>
-            </ul>
-        </div>
-        <p style="margin: 0; color: #666; font-size: 0.9rem; font-style: italic;">
-            <i class="fas fa-info-circle"></i> Copy this format from your actual YouTube video to see real statistics in the results!
-        </p>
+    <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e5e5;">
+        <a href="{% url 'ViewYourProfile' %}" style="color: #737373; font-size: 0.875rem;">Back to Dashboard</a>
     </div>
     {% endif %}
 </div>
 
-<script>
-    const form = document.getElementById('predictionForm');
-    const videoLinkInput = document.getElementById('Video_link');
-    
-    // Auto-fetch video data when YouTube link is pasted or changed
-    if (videoLinkInput) {
-        let fetchTimeout;
-        
-        videoLinkInput.addEventListener('input', function() {
-            clearTimeout(fetchTimeout);
-            const link = this.value.trim();
-            
-            if (link && (link.includes('youtube.com') || link.includes('youtu.be'))) {
-                // Show loading indicator
-                const loadingMsg = document.createElement('div');
-                loadingMsg.id = 'loading-msg';
-                loadingMsg.style.cssText = 'padding: 1rem; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 8px; margin-top: 1rem; text-align: center; animation: slideIn 0.3s ease-out;';
-                loadingMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <strong style="color: #1976d2;">Fetching video data from YouTube...</strong>';
-                
-                // Remove existing loading message
-                const existingMsg = document.getElementById('loading-msg');
-                if (existingMsg) existingMsg.remove();
-                
-                this.parentElement.appendChild(loadingMsg);
-                
-                // Fetch data after 1 second delay
-                fetchTimeout = setTimeout(() => {
-                    fetch(`?fetch_data=true&video_link=${encodeURIComponent(link)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Populate form fields
-                                document.getElementById('title').value = data.data.title || '';
-                                document.getElementById('channel_title').value = data.data.channel_title || '';
-                                document.getElementById('content').value = data.data.description || '';
-                                document.getElementById('views').value = data.data.views || '0';
-                                document.getElementById('likes').value = data.data.likes || '0';
-                                document.getElementById('dislikes').value = data.data.dislikes || '0';
-                                document.getElementById('comment_count').value = data.data.comment_count || '0';
-                                
-                                if (data.data.category) {
-                                    document.getElementById('category').value = data.data.category;
-                                }
-                                
-                                // Extract video ID
-                                const videoIdMatch = link.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-                                if (videoIdMatch) {
-                                    document.getElementById('video_id').value = videoIdMatch[1];
-                                }
-                                
-                                // Show success message
-                                loadingMsg.style.background = 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)';
-                                if (data.demo_mode) {
-                                    loadingMsg.innerHTML = '<i class="fas fa-check-circle"></i> <strong style="color: #155724;">Demo data loaded! 🎮</strong><br><small>DEMO MODE is active - Using sample data. Get a YouTube API key for real data!</small>';
-                                } else {
-                                    loadingMsg.innerHTML = '<i class="fas fa-check-circle"></i> <strong style="color: #155724;">Video data loaded successfully! ✨</strong><br><small>Review the auto-filled data below and click "Analyze Content with AI"</small>';
-                                }
-                                
-                                // Highlight filled fields
-                                const filledInputs = form.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
-                                filledInputs.forEach(input => {
-                                    if (input.value) {
-                                        input.style.background = 'linear-gradient(135deg, #d4edda 0%, #f0f9ff 100%)';
-                                        input.style.borderColor = '#28a745';
-                                    }
-                                });
-                                
-                                // Remove highlight after 3 seconds
-                                setTimeout(() => {
-                                    filledInputs.forEach(input => {
-                                        input.style.background = '';
-                                        input.style.borderColor = '';
-                                    });
-                                }, 3000);
-                            } else {
-                                loadingMsg.style.background = 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)';
-                                loadingMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <strong style="color: #856404;">YouTube API not configured</strong><br><small>' + (data.message || 'Enable DEMO_MODE in config.py or enter data manually') + '</small>';
-                            }
-                            
-                            // Remove message after 5 seconds
-                            setTimeout(() => loadingMsg.remove(), 5000);
-                        })
-                        .catch(error => {
-                            loadingMsg.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
-                            loadingMsg.innerHTML = '<i class="fas fa-times-circle"></i> <strong style="color: #721c24;">Error fetching data</strong><br><small>Please fill the form manually</small>';
-                            setTimeout(() => loadingMsg.remove(), 5000);
-                        });
-                }, 1000);
-            }
-        });
-        
-        // Extract video ID automatically
-        videoLinkInput.addEventListener('blur', function() {
-            const link = this.value.trim();
-            if (link) {
-                const videoIdMatch = link.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-                if (videoIdMatch) {
-                    document.getElementById('video_id').value = videoIdMatch[1];
-                }
-            }
-        });
+<style>
+    details > summary {
+        list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+    details > summary::before {
+        content: '+ ';
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    details[open] > summary::before {
+        content: '− ';
     }
     
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const btn = this.querySelector('button[type="submit"]');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Content...';
-            btn.disabled = true;
+    @media (max-width: 768px) {
+        .form-row-grid {
+            display: block;
+        }
+        
+        .form-row-grid .form-group {
+            margin-bottom: 1.25rem;
+        }
+    }
+</style>
+
+<script>
+    const videoLinkInput = document.getElementById('Video_link');
+    const videoIdInput = document.getElementById('video_id');
+    
+    if (videoLinkInput && videoIdInput) {
+        videoLinkInput.addEventListener('input', function() {
+            const link = this.value.trim();
+            const videoIdMatch = link.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+            if (videoIdMatch) {
+                videoIdInput.value = videoIdMatch[1];
+            }
         });
     }
 </script>
