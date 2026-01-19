@@ -1,202 +1,62 @@
 {% extends 'base.html' %}
 
-{% block title %}Your Profile{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width: 900px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 3rem;">
-        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white; box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4); position: relative;">
-            <i class="fas fa-user"></i>
-            <div style="position: absolute; bottom: 5px; right: 5px; width: 30px; height: 30px; background: #2ecc71; border-radius: 50%; border: 3px solid white;"></div>
-        </div>
-        <h2 style="margin: 0; color: #ffffff; font-size: 2rem;">{{ object.username }}</h2>
-        <p style="color: #d0d0d0; margin-top: 0.5rem;">
-            <i class="fas fa-envelope"></i> {{ object.email }}
-        </p>
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    
+    <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e5e5;">
+        <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">{{ object.username }}</h1>
+        <p style="color: #737373; font-size: 0.9375rem; margin: 0;">{{ object.email }}</p>
     </div>
     
-    <style>
-        .profile-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.125rem; margin-bottom: 1rem;">Account Information</h2>
         
-        .profile-section h3 {
-            color: #ffffff !important;
-        }
-        
-        .profile-section p {
-            color: #d0d0d0 !important;
-        }
-        
-        .profile-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .profile-item {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(74, 144, 226, 0.3);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid #4A90E2;
-            transition: all 0.3s ease;
-        }
-        
-        .profile-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.3);
-            background: rgba(74, 144, 226, 0.08);
-        }
-        
-        .profile-label {
-            color: #b0b0b0;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .profile-value {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .action-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
-            color: #ffffff;
-        }
-        
-        .action-card:hover {
-            border-color: #4A90E2;
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(74, 144, 226, 0.3);
-            background: rgba(74, 144, 226, 0.1);
-        }
-        
-        .action-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-    </style>
-    
-    <div class="profile-section">
-        <h3 style="margin: 0 0 0.5rem; color: #495057;">
-            <i class="fas fa-id-card"></i> Personal Information
-        </h3>
-        <p style="color: #999; font-size: 0.9rem; margin-bottom: 0;">Your account details and contact information</p>
-        
-        <div class="profile-grid">
-            <div class="profile-item">
-                <div class="profile-label">
-                    <i class="fas fa-phone"></i> Phone Number
-                </div>
-                <div class="profile-value">{{ object.phoneno }}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; font-size: 0.9375rem;">
+            <div>
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">Phone</div>
+                <div style="color: #1a1a1a;">{{ object.phoneno }}</div>
             </div>
             
-            <div class="profile-item">
-                <div class="profile-label">
-                    <i class="fas fa-venus-mars"></i> Gender
-                </div>
-                <div class="profile-value">{{ object.gender }}</div>
+            <div>
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">Gender</div>
+                <div style="color: #1a1a1a;">{{ object.gender }}</div>
+            </div>
+            
+            <div>
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">Country</div>
+                <div style="color: #1a1a1a;">{{ object.country }}</div>
+            </div>
+            
+            <div>
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">State</div>
+                <div style="color: #1a1a1a;">{{ object.state }}</div>
+            </div>
+            
+            <div>
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">City</div>
+                <div style="color: #1a1a1a;">{{ object.city }}</div>
+            </div>
+            
+            <div style="grid-column: 1 / -1;">
+                <div style="color: #737373; font-size: 0.875rem; margin-bottom: 0.25rem;">Address</div>
+                <div style="color: #1a1a1a;">{{ object.address }}</div>
             </div>
         </div>
     </div>
     
-    <div class="profile-section">
-        <h3 style="margin: 0 0 0.5rem; color: #495057;">
-            <i class="fas fa-map-marked-alt"></i> Location Details
-        </h3>
-        <p style="color: #999; font-size: 0.9rem; margin-bottom: 0;">Your geographical information</p>
-        
-        <div class="profile-grid">
-            <div class="profile-item">
-                <div class="profile-label">
-                    <i class="fas fa-globe"></i> Country
-                </div>
-                <div class="profile-value">{{ object.country }}</div>
-            </div>
-            
-            <div class="profile-item">
-                <div class="profile-label">
-                    <i class="fas fa-map-pin"></i> State/Region
-                </div>
-                <div class="profile-value">{{ object.state }}</div>
-            </div>
-            
-            <div class="profile-item">
-                <div class="profile-label">
-                    <i class="fas fa-city"></i> City
-                </div>
-                <div class="profile-value">{{ object.city }}</div>
-            </div>
-        </div>
-        
-        <div style="margin-top: 1.5rem; background: rgba(23, 162, 184, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(23, 162, 184, 0.3); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #17a2b8;">
-            <div class="profile-label">
-                <i class="fas fa-home"></i> Full Address
-            </div>
-            <div class="profile-value">{{ object.address }}</div>
-        </div>
-    </div>
-    
-    <div class="profile-section" style="background: rgba(74, 144, 226, 0.08); border: 1px solid rgba(74, 144, 226, 0.3);">
-        <h3 style="margin: 0 0 1.5rem; color: #ffffff; text-align: center;">
-            <i class="fas fa-rocket"></i> Quick Actions
-        </h3>
-        
-        <div class="action-grid">
-            <a href="{% url 'Predict_YouTube_Content_Type' %}" class="action-card">
-                <span class="action-icon" style="color: #A05EFF;">
-                    <i class="fas fa-brain"></i>
-                </span>
-                <h4 style="margin: 0 0 0.5rem; color: #ffffff;">Analyze Content</h4>
-                <p style="color: #d0d0d0; font-size: 0.9rem; margin: 0;">Detect inappropriate videos</p>
-            </a>
-            
-            <a href="{% url 'index' %}" class="action-card">
-                <span class="action-icon" style="color: #FF6B6B;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </span>
-                <h4 style="margin: 0 0 0.5rem; color: #ffffff;">Logout</h4>
-                <p style="color: #d0d0d0; font-size: 0.9rem; margin: 0;">End your session safely</p>
-            </a>
-        </div>
-    </div>
-    
-    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 193, 7, 0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px; border-left: 4px solid #ffc107; text-align: center;">
-        <p style="margin: 0; color: #ffc107;">
-            <i class="fas fa-shield-alt"></i> <strong style="color: #ffffff;">Your Privacy Matters</strong><br>
-            <span style="font-size: 0.9rem; color: #d0d0d0;">We protect your data with enterprise-grade security. Your information is never shared with third parties.</span>
-        </p>
+    <div style="display: flex; gap: 0.75rem;">
+        <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">Analyze Content</a>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Logout</a>
     </div>
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        .card > div > div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
