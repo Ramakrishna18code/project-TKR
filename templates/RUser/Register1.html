@@ -20,7 +20,7 @@
     <form method="POST">
         {% csrf_token %}
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required autofocus>
@@ -37,7 +37,7 @@
             <input type="password" id="password" name="password" required>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="phoneno">Phone Number</label>
                 <input type="text" id="phoneno" name="phoneno" required>
@@ -59,7 +59,7 @@
             <input type="text" id="country" name="country" required>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="state">State</label>
                 <input type="text" id="state" name="state" required>
@@ -91,13 +91,12 @@
 
 <style>
     @media (max-width: 640px) {
-        .card > form > div[style*="grid-template-columns"] {
-            grid-template-columns: 1fr !important;
-            gap: 0 !important;
+        .form-row-grid {
+            display: block;
         }
         
-        .card > form > div > .form-group {
-            margin-bottom: 1.25rem !important;
+        .form-row-grid .form-group {
+            margin-bottom: 1.25rem;
         }
     }
 </style>
