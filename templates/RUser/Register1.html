@@ -1,167 +1,52 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Account{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width: 600px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4); animation: bounceIn 0.8s ease-out;">
-            <i class="fas fa-user-plus"></i>
-        </div>
-        <h2 style="margin: 0; color: #ffffff;">Create Your Account</h2>
-        <p style="color: #d0d0d0; margin-top: 0.5rem;">Join our platform to detect inappropriate content</p>
-    </div>
-    
-    <style>
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e9ecef;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3498db, #2ecc71);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
-        .input-wrapper .input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-            pointer-events: none;
-        }
-        
-        .input-wrapper input,
-        .input-wrapper select,
-        .input-wrapper textarea {
-            padding-left: 45px !important;
-        }
-        
-        .strength-meter {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: #b0b0b0;
-            display: none;
-        }
-        
-        .strength-meter.show {
-            display: block;
-        }
-    </style>
-    
+<div class="card" style="max-width: 540px; margin: 3rem auto;">
     {% if object %}
-    <div style="text-align: center; padding: 3rem 2rem;">
-        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 50%; margin: 0 auto 2rem; display: flex; align-items: center; justify-content: center; animation: scaleIn 0.6s ease-out;">
-            <i class="fas fa-check-circle" style="font-size: 4rem; color: white;"></i>
-        </div>
-        <h2 style="margin: 0 0 1rem; color: #27ae60; font-size: 2rem;">{{ object }}</h2>
-        <p style="color: #d0d0d0; margin: 0 0 2.5rem; font-size: 1.1rem;">Your account has been created successfully! You can now access all features.</p>
-        <a href="{% url 'login' %}" style="display: inline-block; padding: 15px 50px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 1.2rem; font-weight: 600; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4); transition: all 0.3s ease; border: none;">
-            <i class="fas fa-sign-in-alt"></i> Go to Login
-        </a>
-        <p style="margin-top: 2rem; color: #b0b0b0; font-size: 0.9rem;">
-            <i class="fas fa-info-circle"></i> Use your credentials to sign in
-        </p>
+    <div style="text-align: center; padding: 2rem 0;">
+        <h2 style="color: #22c55e; margin-bottom: 1rem;">Registration Successful</h2>
+        <p style="margin-bottom: 2rem; color: #404040;">{{ object }}</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Go to Login</a>
     </div>
-    <style>
-        @keyframes scaleIn {
-            from { transform: scale(0) rotate(-180deg); opacity: 0; }
-            to { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        a[href*="login"]:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.5);
-        }
-    </style>
     {% else %}
     
-    <div class="progress-bar">
-        <div class="progress-fill" id="formProgress"></div>
-    </div>
+    <h2 style="margin-bottom: 0.5rem;">Create Account</h2>
+    <p style="font-size: 0.875rem; color: #737373; margin-bottom: 2rem;">
+        Register to access the content detection system
+    </p>
     
-    <form method="POST" id="registerForm">
+    <form method="POST">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label for="username"><i class="fas fa-user"></i> Username</label>
-            <div class="input-wrapper">
-                <i class="fas fa-at input-icon"></i>
-                <input type="text" id="username" name="username" placeholder="Choose a unique username" required autofocus>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
             </div>
         </div>
         
         <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
-            <div class="input-wrapper">
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
-            </div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
         </div>
         
-        <div class="form-group">
-            <label for="password"><i class="fas fa-lock"></i> Password</label>
-            <div class="input-wrapper">
-                <i class="fas fa-key input-icon"></i>
-                <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="phoneno">Phone Number</label>
+                <input type="text" id="phoneno" name="phoneno" required>
             </div>
-            <div class="strength-meter" id="strengthMeter"></div>
-        </div>
-        
-        <div class="form-group">
-            <label for="phoneno"><i class="fas fa-phone"></i> Phone Number</label>
-            <div class="input-wrapper">
-                <i class="fas fa-mobile-alt input-icon"></i>
-                <input type="text" id="phoneno" name="phoneno" placeholder="+1 (555) 123-4567" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="country"><i class="fas fa-globe"></i> Country</label>
-            <div class="input-wrapper">
-                <i class="fas fa-flag input-icon"></i>
-                <input type="text" id="country" name="country" placeholder="Your country" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="state"><i class="fas fa-map-marker-alt"></i> State/Region</label>
-            <div class="input-wrapper">
-                <i class="fas fa-map-pin input-icon"></i>
-                <input type="text" id="state" name="state" placeholder="Your state or region" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="city"><i class="fas fa-city"></i> City</label>
-            <div class="input-wrapper">
-                <i class="fas fa-building input-icon"></i>
-                <input type="text" id="city" name="city" placeholder="Your city" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
-            <div class="input-wrapper">
-                <i class="fas fa-user-circle input-icon"></i>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="gender">Gender</label>
                 <select id="gender" name="gender" required>
-                    <option value="">Select Gender</option>
+                    <option value="">Select</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
@@ -170,119 +55,50 @@
         </div>
         
         <div class="form-group">
-            <label for="address"><i class="fas fa-home"></i> Address</label>
-            <div class="input-wrapper">
-                <i class="fas fa-map-marked-alt input-icon"></i>
-                <textarea id="address" name="address" rows="3" placeholder="Enter your full address" required></textarea>
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" required>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="state">State</label>
+                <input type="text" id="state" name="state" required>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required>
             </div>
         </div>
         
-        <div class="form-group" style="margin-top: 2rem;">
-            <label style="display: flex; align-items: center; cursor: pointer; user-select: none;">
-                <input type="checkbox" required style="margin-right: 10px; transform: scale(1.3);">
-                <span>I agree to the <a href="#" style="color: #3498db;">Terms of Service</a> and <a href="#" style="color: #3498db;">Privacy Policy</a></span>
-            </label>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="2" required></textarea>
         </div>
         
-        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; margin-top: 1.5rem;">
-            <i class="fas fa-user-check"></i> Create Account
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            Create Account
         </button>
     </form>
     
-    <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
-        <p style="color: #666;">
-            Already have an account? 
-            <a href="{% url 'login' %}" style="color: #3498db; font-weight: 600; text-decoration: none;">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </a>
-        </p>
-    </div>
-    
-    <div style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border-radius: 12px; border-left: 4px solid #17a2b8;">
-        <p style="margin: 0; color: #0c5460; text-align: center;">
-            <i class="fas fa-shield-alt"></i> <strong>Your data is secure</strong><br>
-            <span style="font-size: 0.9rem;">We use industry-standard encryption to protect your information</span>
+    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; text-align: center;">
+        <p style="font-size: 0.875rem; color: #737373;">
+            Already have an account? <a href="{% url 'login' %}">Sign In</a>
         </p>
     </div>
     {% endif %}
 </div>
 
-<script>
-    // Form progress tracking
-    const form = document.getElementById('registerForm');
-    if (form) {
-        const progressBar = document.getElementById('formProgress');
-        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-        
-        function updateProgress() {
-            let filled = 0;
-            inputs.forEach(input => {
-                if (input.type === 'checkbox') {
-                    if (input.checked) filled++;
-                } else {
-                    if (input.value.trim() !== '') filled++;
-                }
-            });
-            const progress = (filled / inputs.length) * 100;
-            progressBar.style.width = progress + '%';
+<style>
+    @media (max-width: 640px) {
+        .card > form > div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
         }
         
-        inputs.forEach(input => {
-            input.addEventListener('input', updateProgress);
-            input.addEventListener('change', updateProgress);
-        });
-        
-        // Password strength meter
-        const passwordInput = document.getElementById('password');
-        const strengthMeter = document.getElementById('strengthMeter');
-        
-        passwordInput.addEventListener('input', function() {
-            const password = this.value;
-            if (password.length === 0) {
-                strengthMeter.classList.remove('show');
-                return;
-            }
-            
-            strengthMeter.classList.add('show');
-            let strength = 0;
-            let message = '';
-            let color = '';
-            
-            if (password.length >= 8) strength++;
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-            if (password.match(/[0-9]/)) strength++;
-            if (password.match(/[^a-zA-Z0-9]/)) strength++;
-            
-            switch(strength) {
-                case 0:
-                case 1:
-                    message = '🔴 Weak - Add more characters and variety';
-                    color = '#e74c3c';
-                    break;
-                case 2:
-                    message = '🟡 Fair - Consider adding numbers or symbols';
-                    color = '#f39c12';
-                    break;
-                case 3:
-                    message = '🟢 Good - Strong password';
-                    color = '#27ae60';
-                    break;
-                case 4:
-                    message = '🟢 Excellent - Very strong password!';
-                    color = '#2ecc71';
-                    break;
-            }
-            
-            strengthMeter.textContent = message;
-            strengthMeter.style.color = color;
-        });
-        
-        // Form submission animation
-        form.addEventListener('submit', function() {
-            const btn = this.querySelector('button[type="submit"]');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
-            btn.disabled = true;
-        });
+        .card > form > div > .form-group {
+            margin-bottom: 1.25rem !important;
+        }
     }
-</script>
+</style>
 {% endblock %}
