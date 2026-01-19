@@ -14,20 +14,20 @@
     <!-- RESULT PAGE -->
     <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e5e5;">
         <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">
-            {% if objs == 'True Content' %}Content Acceptable{% else %}Content Flagged{% endif %}
+            {% if objs == 'True Content' %}Safe Content{% else %}Flagged Content{% endif %}
         </h1>
         <p style="color: #737373; font-size: 0.9375rem; margin-bottom: 0;">
             {% if objs == 'True Content' %}
-            This content meets safety standards for general viewing.
+            Content meets safety standards.
             {% else %}
-            This content contains potentially inappropriate material.
+            Content contains potentially inappropriate material.
             {% endif %}
         </p>
     </div>
     
     {% if video_data.reason %}
     <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e5e5;">
-        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: #1a1a1a;">Classification Basis</h3>
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: #1a1a1a;">Classification Reason</h3>
         <p style="color: #404040; font-size: 0.9375rem; line-height: 1.6; margin: 0;">
             {{ video_data.reason }}
         </p>
@@ -35,14 +35,14 @@
     {% endif %}
     
     <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
-        <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">Analyze Another</a>
-        <a href="{% url 'ViewYourProfile' %}" class="btn btn-secondary">Return to Dashboard</a>
+        <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">New Analysis</a>
+        <a href="{% url 'ViewYourProfile' %}" class="btn btn-secondary">Return to Account</a>
     </div>
     
     <!-- SECONDARY DETAILS (COLLAPSED BY DEFAULT) -->
     <details style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e5e5;">
         <summary style="cursor: pointer; font-weight: 500; color: #1a1a1a; font-size: 0.9375rem; user-select: none;">
-            Show Video Details
+            Video Details
         </summary>
         
         <div style="margin-top: 1.5rem;">
@@ -50,7 +50,7 @@
                 <tbody>
                     {% if video_data.title %}
                     <tr>
-                        <td style="font-weight: 500; color: #737373; width: 140px;">Video Title</td>
+                        <td style="font-weight: 500; color: #737373; width: 140px;">Title</td>
                         <td>{{ video_data.title }}</td>
                     </tr>
                     {% endif %}
@@ -96,7 +96,7 @@
             {% if video_data.video_link %}
             <div style="margin-top: 1.5rem;">
                 <a href="{{ video_data.video_link }}" target="_blank" class="btn btn-secondary" style="font-size: 0.875rem;">
-                    View on YouTube
+                    View Source
                 </a>
             </div>
             {% endif %}
@@ -105,45 +105,40 @@
     
     {% else %}
     <!-- INPUT FORM -->
-    <h2 style="margin-bottom: 0.5rem;">Analyze Video Content</h2>
-    <p style="font-size: 0.875rem; color: #737373; margin-bottom: 2rem;">
-        Enter a YouTube video URL to check for inappropriate content
-    </p>
+    <h2 style="margin-bottom: 1.5rem;">Analyze Content</h2>
     
     <form method="POST">
         {% csrf_token %}
         
         <div class="form-group">
-            <label for="Video_link">YouTube Video URL</label>
+            <label for="Video_link">Video URL</label>
             <input type="text" id="Video_link" name="Video_link" required placeholder="https://www.youtube.com/watch?v=...">
         </div>
         
         <div class="form-group">
             <label for="video_id">Video ID</label>
-            <input type="text" id="video_id" name="video_id" placeholder="Extracted from URL">
-        </div>
-        
-        <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-            <div class="form-group" style="margin-bottom: 0;">
-                <label for="title">Video Title</label>
-                <input type="text" id="title" name="title">
-            </div>
-            
-            <div class="form-group" style="margin-bottom: 0;">
-                <label for="channel_title">Channel Name</label>
-                <input type="text" id="channel_title" name="channel_title">
-            </div>
+            <input type="text" id="video_id" name="video_id" placeholder="Auto-extracted from URL">
         </div>
         
         <div class="form-group">
-            <label for="content">Content Description</label>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title">
+        </div>
+        
+        <div class="form-group">
+            <label for="channel_title">Channel</label>
+            <input type="text" id="channel_title" name="channel_title">
+        </div>
+        
+        <div class="form-group">
+            <label for="content">Description</label>
             <textarea id="content" name="content" rows="3"></textarea>
         </div>
         
         <div class="form-group">
             <label for="category">Category</label>
             <select id="category" name="category">
-                <option value="">Select Category</option>
+                <option value="">Select</option>
                 <option value="Education">Education</option>
                 <option value="Entertainment">Entertainment</option>
                 <option value="Gaming">Gaming</option>
@@ -157,53 +152,47 @@
         
         <details style="margin-bottom: 1.5rem;">
             <summary style="cursor: pointer; font-weight: 500; color: #737373; font-size: 0.875rem; user-select: none; margin-bottom: 1rem;">
-                Additional Metrics (Optional)
+                Additional Metrics
             </summary>
             
-            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="views">Views</label>
-                    <input type="number" id="views" name="views" min="0">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="likes">Likes</label>
-                    <input type="number" id="likes" name="likes" min="0">
-                </div>
+            <div class="form-group">
+                <label for="views">Views</label>
+                <input type="number" id="views" name="views" min="0">
             </div>
             
-            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="dislikes">Dislikes</label>
-                    <input type="number" id="dislikes" name="dislikes" min="0">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="comment_count">Comments</label>
-                    <input type="number" id="comment_count" name="comment_count" min="0">
-                </div>
+            <div class="form-group">
+                <label for="likes">Likes</label>
+                <input type="number" id="likes" name="likes" min="0">
             </div>
             
-            <div class="form-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="publish_date">Publish Date</label>
-                    <input type="date" id="publish_date" name="publish_date">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="views_per_day">Views Per Day</label>
-                    <input type="number" id="views_per_day" name="views_per_day" min="0">
-                </div>
+            <div class="form-group">
+                <label for="dislikes">Dislikes</label>
+                <input type="number" id="dislikes" name="dislikes" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="comment_count">Comments</label>
+                <input type="number" id="comment_count" name="comment_count" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="publish_date">Publish Date</label>
+                <input type="date" id="publish_date" name="publish_date">
+            </div>
+            
+            <div class="form-group">
+                <label for="views_per_day">Views Per Day</label>
+                <input type="number" id="views_per_day" name="views_per_day" min="0">
             </div>
         </details>
         
         <button type="submit" class="btn btn-primary" style="width: 100%;">
-            Analyze Content
+            Analyze
         </button>
     </form>
     
     <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e5e5;">
-        <a href="{% url 'ViewYourProfile' %}" style="color: #737373; font-size: 0.875rem;">Back to Dashboard</a>
+        <a href="{% url 'ViewYourProfile' %}" style="color: #737373; font-size: 0.875rem;">Back to Account</a>
     </div>
     {% endif %}
 </div>
@@ -222,16 +211,6 @@
     }
     details[open] > summary::before {
         content: '− ';
-    }
-    
-    @media (max-width: 768px) {
-        .form-row-grid {
-            display: block;
-        }
-        
-        .form-row-grid .form-group {
-            margin-bottom: 1.25rem;
-        }
     }
 </style>
 

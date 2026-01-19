@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Account{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width: 600px; margin: 2rem auto;">
@@ -11,7 +11,7 @@
     </div>
     
     <div style="margin-bottom: 2rem;">
-        <h2 style="font-size: 1.125rem; margin-bottom: 1rem;">Account Information</h2>
+        <h2 style="font-size: 1.125rem; margin-bottom: 1rem;">Account Details</h2>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; font-size: 0.9375rem;">
             <div>
@@ -48,7 +48,7 @@
     
     <div style="display: flex; gap: 0.75rem;">
         <a href="{% url 'Predict_YouTube_Content_Type' %}" class="btn btn-primary">Analyze Content</a>
-        <a href="{% url 'index' %}" class="btn btn-secondary">Logout</a>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Sign Out</a>
     </div>
 </div>
 

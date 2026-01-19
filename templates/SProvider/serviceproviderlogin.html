@@ -1,40 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Login{% endblock %}
+{% block title %}Administrator Login{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width: 420px; margin: 4rem auto; border-top: 3px solid #1a1a1a;">
-    <h2 style="margin-bottom: 0.5rem;">Administrator Access</h2>
-    <p style="font-size: 0.875rem; color: #737373; margin-bottom: 2rem;">
-        Restricted to authorized personnel only
-    </p>
+    <h2 style="margin-bottom: 1.5rem;">Administrator Access</h2>
     
     <form method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <label for="username">Administrator Username</label>
+            <label for="username">Username</label>
             <input type="text" id="username" name="username" required autofocus>
         </div>
         
         <div class="form-group">
-            <label for="password">Administrator Password</label>
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
         </div>
         
         <button type="submit" class="btn" style="width: 100%; background: #1a1a1a; border-color: #1a1a1a;">
-            Access Dashboard
+            Access
         </button>
     </form>
     
     <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; text-align: center;">
         <p style="font-size: 0.875rem;">
-            <a href="{% url 'index' %}" style="color: #737373;">Back to Home</a>
+            <a href="{% url 'index' %}" style="color: #737373;">Return to home</a>
         </p>
     </div>
     
     <div style="margin-top: 1.5rem; padding: 0.875rem; background: #fafaf9; border: 1px solid #e5e5e5; border-radius: 6px;">
         <p style="font-size: 0.8125rem; color: #737373; margin: 0;">
-            Default credentials: <span style="font-family: monospace; color: #1a1a1a;">Admin / Admin</span>
+            Default: <span style="font-family: monospace; color: #1a1a1a;">Admin / Admin</span>
         </p>
     </div>
 </div>
