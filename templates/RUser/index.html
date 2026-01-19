@@ -1,28 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}YouTube Content Detection{% endblock %}
+{% block title %}Content Detection System{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width: 600px; margin: 4rem auto; text-align: center;">
-    <h1 style="margin-bottom: 0.75rem;">YouTube Content Detection</h1>
-    <p style="font-size: 1.125rem; color: #737373; margin-bottom: 2.5rem;">
-        Automated content classification system for identifying inappropriate video content
-    </p>
+<div class="card" style="max-width: 500px; margin: 4rem auto;">
+    <h1 style="margin-bottom: 1.5rem; font-size: 1.75rem;">Content Detection System</h1>
     
-    <div style="margin-bottom: 2.5rem;">
+    <div style="margin-bottom: 2rem;">
         <a href="{% url 'login' %}" class="btn btn-primary" style="width: 100%; margin-bottom: 0.75rem; display: block;">User Login</a>
-        <a href="{% url 'Register1' %}" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem; display: block;">User Register</a>
-        <a href="{% url 'serviceproviderlogin' %}" class="btn btn-secondary" style="width: 100%; display: block;">Admin Login</a>
-    </div>
-    
-    <div style="padding-top: 2rem; border-top: 1px solid #e5e5e5; text-align: left;">
-        <p style="font-size: 0.9375rem; color: #404040; line-height: 1.6; margin-bottom: 1rem;">
-            This system analyzes video content using deep learning models to detect and classify inappropriate material. 
-            It processes video frames and contextual patterns to provide content safety assessments.
-        </p>
-        <p style="font-size: 0.875rem; color: #737373;">
-            Classification accuracy: 95.66%
-        </p>
+        <a href="{% url 'Register1' %}" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem; display: block;">User Registration</a>
+        <a href="{% url 'serviceproviderlogin' %}" class="btn btn-secondary" style="width: 100%; display: block;">Administrator Login</a>
     </div>
 </div>
 {% endblock %}
