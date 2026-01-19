@@ -1,67 +1,266 @@
 {% extends 'base.html' %}
 
-{% block title %}Charts{% endblock %}
+{% block title %}Admin Dashboard - Content Ratio Chart{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <h2 style="text-align: center; margin-bottom: 2rem;">Prediction Ratio - {{ chart_type|title }} Chart</h2>
-    
-    <div style="text-align: center; margin-bottom: 1rem;">
-        <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="btn">Back to Ratios</a>
-        <a href="{% url 'charts' 'bar' %}" class="btn">Bar Chart</a>
-        <a href="{% url 'charts' 'pie' %}" class="btn">Pie Chart</a>
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(74, 144, 226, 0.15) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
+    }
+    .admin-header h1 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .admin-header p {
+        color: #e0e0e0 !important;
+    }
+    .chart-controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .chart-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        cursor: pointer;
+    }
+    .chart-btn-back {
+        background: rgba(149, 165, 166, 0.2);
+        border: 1px solid rgba(149, 165, 166, 0.3);
+        color: #b0b0b0;
+    }
+    .chart-btn-back:hover {
+        background: rgba(149, 165, 166, 0.3);
+        color: #ffffff;
+    }
+    .chart-btn-type {
+        background: rgba(74, 144, 226, 0.2);
+        border: 1px solid rgba(74, 144, 226, 0.3);
+        color: #6ab0ff;
+    }
+    .chart-btn-type:hover {
+        background: rgba(74, 144, 226, 0.3);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+    .chart-btn-active {
+        background: linear-gradient(135deg, #51CF66 0%, #40C057 100%);
+        border-color: transparent;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(81, 207, 102, 0.4);
+    }
+    .chart-container {
+        background: rgba(18, 18, 35, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(74, 144, 226, 0.2);
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .chart-info {
+        background: rgba(74, 144, 226, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(74, 144, 226, 0.3);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        border-left: 4px solid #4A90E2;
+    }
+    .chart-info h3 {
+        color: #ffffff !important;
+    }
+    .chart-info p {
+        color: #d0d0d0 !important;
+    }
+    .chart-legend {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+    }
+    .legend-label {
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 0.95rem;
+    }
+</style>
+
+<div class="admin-header">
+    <h1 style="margin: 0; font-size: 2rem;">📊 Content Detection Analytics</h1>
+    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Visual analysis of prediction ratios</p>
+</div>
+
+<div class="chart-controls">
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="chart-btn chart-btn-back">
+        ← Back to Analytics
+    </a>
+    <a href="{% url 'charts' 'bar' %}" class="chart-btn chart-btn-type {% if chart_type == 'bar' %}chart-btn-active{% endif %}">
+        📊 Bar Chart
+    </a>
+    <a href="{% url 'charts' 'pie' %}" class="chart-btn chart-btn-type {% if chart_type == 'pie' %}chart-btn-active{% endif %}">
+        🥧 Pie Chart
+    </a>
+</div>
+
+<div class="chart-info">
+    <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50;">📈 Understanding the Chart</h3>
+    <p style="margin: 0; color: #34495e;">
+        This chart shows the distribution of content predictions across different categories. 
+        {% if chart_type == 'bar' %}
+        <strong>Bar Chart</strong> provides a clear comparison of percentage values.
+        {% else %}
+        <strong>Pie Chart</strong> shows the proportional breakdown of all predictions.
+        {% endif %}
+    </p>
+</div>
+
+<div class="chart-container">
+    <div class="chart-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #2ecc71, #27ae60);"></div>
+            <span class="legend-label">✓ Safe Content</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #e74c3c, #c0392b);"></div>
+            <span class="legend-label">⚠ False Content</span>
+        </div>
     </div>
     
-    <div style="max-width: 800px; margin: 2rem auto;">
+    <div style="position: relative; height: 400px;">
         <canvas id="myChart"></canvas>
     </div>
 </div>
 
 <script>
-    // @ts-nocheck
     const ctx = document.getElementById('myChart');
     const labels = [{% for item in form %}'{{ item.names }}',{% endfor %}];
     const data = [{% for item in form %}{{ item.dcount|default:0 }},{% endfor %}];
+    
+    // Color mapping based on content type
+    const backgroundColors = labels.map(label => {
+        if (label.includes('True')) {
+            return '{{ chart_type }}' === 'pie' 
+                ? 'rgba(46, 204, 113, 0.8)' 
+                : 'rgba(46, 204, 113, 0.7)';
+        } else {
+            return '{{ chart_type }}' === 'pie' 
+                ? 'rgba(231, 76, 60, 0.8)' 
+                : 'rgba(231, 76, 60, 0.7)';
+        }
+    });
+    
+    const borderColors = labels.map(label => {
+        return label.includes('True') 
+            ? 'rgba(39, 174, 96, 1)' 
+            : 'rgba(192, 57, 43, 1)';
+    });
     
     new Chart(ctx, {
         type: '{{ chart_type }}',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Prediction Ratio (%)',
+                label: 'Content Distribution (%)',
                 data: data,
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(255, 99, 132, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(255, 99, 132, 1)',
-                ],
-                borderWidth: 1
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 2,
+                hoverOffset: 15
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top',
+                    display: false  // Using custom legend above
                 },
                 title: {
                     display: true,
-                    text: 'Content Detection Ratio'
+                    text: 'Content Detection Ratio Analysis',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    },
+                    padding: 20,
+                    color: '#2c3e50'
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.toFixed(1) + '%';
+                        }
+                    }
                 }
             },
+            {% if chart_type == 'bar' %}
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 100
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
                 }
             }
+            {% endif %}
         }
     });
 </script>

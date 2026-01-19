@@ -8,8 +8,8 @@
         <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4); animation: bounceIn 0.8s ease-out;">
             <i class="fas fa-user-plus"></i>
         </div>
-        <h2 style="margin: 0; color: #3498db;">Create Your Account</h2>
-        <p style="color: #777; margin-top: 0.5rem;">Join our platform to detect inappropriate content</p>
+        <h2 style="margin: 0; color: #ffffff;">Create Your Account</h2>
+        <p style="color: #d0d0d0; margin-top: 0.5rem;">Join our platform to detect inappropriate content</p>
     </div>
     
     <style>
@@ -44,7 +44,7 @@
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #aaa;
+            color: #888;
             pointer-events: none;
         }
         
@@ -57,7 +57,7 @@
         .strength-meter {
             margin-top: 0.5rem;
             font-size: 0.85rem;
-            color: #666;
+            color: #b0b0b0;
             display: none;
         }
         
@@ -72,11 +72,11 @@
             <i class="fas fa-check-circle" style="font-size: 4rem; color: white;"></i>
         </div>
         <h2 style="margin: 0 0 1rem; color: #27ae60; font-size: 2rem;">{{ object }}</h2>
-        <p style="color: #666; margin: 0 0 2.5rem; font-size: 1.1rem;">Your account has been created successfully! You can now access all features.</p>
+        <p style="color: #d0d0d0; margin: 0 0 2.5rem; font-size: 1.1rem;">Your account has been created successfully! You can now access all features.</p>
         <a href="{% url 'login' %}" style="display: inline-block; padding: 15px 50px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 1.2rem; font-weight: 600; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4); transition: all 0.3s ease; border: none;">
             <i class="fas fa-sign-in-alt"></i> Go to Login
         </a>
-        <p style="margin-top: 2rem; color: #999; font-size: 0.9rem;">
+        <p style="margin-top: 2rem; color: #b0b0b0; font-size: 0.9rem;">
             <i class="fas fa-info-circle"></i> Use your credentials to sign in
         </p>
     </div>

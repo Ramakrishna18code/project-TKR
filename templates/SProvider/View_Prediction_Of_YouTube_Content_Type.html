@@ -1,53 +1,269 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
-{% block title %}View Predictions{% endblock %}
+{% block title %}Admin Dashboard - Predictions{% endblock %}
 
 {% block content %}
-<div class="card">
-    <h2 style="text-align: center; margin-bottom: 2rem;">Content Predictions</h2>
-    
-    <div style="text-align: center; margin-bottom: 1rem;">
-        <a href="{% url 'View_Remote_Users' %}" class="btn">View Users</a>
-        <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="btn">View Ratios</a>
-        <a href="{% url 'train_model' %}" class="btn">Train Model</a>
-        <a href="{% url 'index' %}" class="btn" style="background-color: #e74c3c;">Logout</a>
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(74, 144, 226, 0.15) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
+    }
+    .admin-header h1 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .admin-header p {
+        color: #e0e0e0 !important;
+    }
+    .admin-nav {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .nav-btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+    }
+    .nav-btn-primary {
+        background: rgba(74, 144, 226, 0.2);
+        border: 1px solid rgba(74, 144, 226, 0.4);
+        color: #6ab0ff;
+    }
+    .nav-btn-primary:hover {
+        background: rgba(74, 144, 226, 0.3);
+        border-color: rgba(74, 144, 226, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74,144,226,0.4);
+    }
+    .nav-btn-active {
+        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+    }
+    .nav-btn-danger {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .nav-btn-danger:hover {
+        background-color: #c0392b;
+    }
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+    .stat-card.safe {
+        border-left: 4px solid #2ecc71;
+    }
+    .stat-card.false {
+        border-left: 4px solid #e74c3c;
+    }
+    .stat-card.total {
+        border-left: 4px solid #3498db;
+    }
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .stat-label {
+        color: #b0b0b0;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .data-table {
+        background: rgba(18, 18, 35, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(74, 144, 226, 0.2);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .data-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table thead {
+        background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(160, 94, 255, 0.3) 100%);
+        border-bottom: 2px solid rgba(74, 144, 226, 0.5);
+    }
+    .data-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .data-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: #ffffff;
+        font-size: 0.95rem;
+    }
+    .data-table tbody tr {
+        background: rgba(255, 255, 255, 0.02);
+        transition: all 0.3s ease;
+    }
+    .data-table tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.04);
+    }
+    .data-table tbody tr:hover {
+        background-color: rgba(74, 144, 226, 0.15);
+        transform: translateX(4px);
+    }
+    .badge-safe {
+        background: linear-gradient(135deg, rgba(81, 207, 102, 0.25) 0%, rgba(64, 192, 87, 0.3) 100%);
+        color: #7bed9f;
+        border: 1px solid rgba(81, 207, 102, 0.5);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: inline-block;
+        font-size: 0.9rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .badge-false {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.25) 0%, rgba(238, 90, 82, 0.3) 100%);
+        color: #ff7979;
+        border: 1px solid rgba(255, 107, 107, 0.5);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: inline-block;
+        font-size: 0.9rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #b0b0b0;
+    }
+    .empty-state h3 {
+        color: #ffffff;
+    }
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="admin-header">
+    <h1 style="margin: 0; font-size: 2rem;">📊 Admin Dashboard</h1>
+    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Manage users, predictions, and analytics</p>
+</div>
+
+<nav class="admin-nav">
+    <a href="{% url 'View_Remote_Users' %}" class="nav-btn nav-btn-primary">
+        👥 Registered Users
+    </a>
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="nav-btn nav-btn-active">
+        🔍 View Predictions
+    </a>
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="nav-btn nav-btn-primary">
+        📈 Analytics & Ratios
+    </a>
+    <a href="{% url 'train_model' %}" class="nav-btn nav-btn-primary">
+        🤖 Train ML Model
+    </a>
+    <a href="{% url 'index' %}" class="nav-btn nav-btn-danger">
+        🚪 Logout
+    </a>
+</nav>
+
+{% if list_objects %}
+<div class="stats-container">
+    <div class="stat-card total">
+        <p class="stat-number" style="color: #3498db;">{{ total_count }}</p>
+        <p class="stat-label">Total Predictions</p>
     </div>
-    
-    {% if list_objects %}
+    <div class="stat-card safe">
+        <p class="stat-number" style="color: #2ecc71;">{{ safe_count }}</p>
+        <p class="stat-label">✓ Safe Content</p>
+    </div>
+    <div class="stat-card false">
+        <p class="stat-number" style="color: #e74c3c;">{{ false_count }}</p>
+        <p class="stat-label">⚠ False Content</p>
+    </div>
+</div>
+
+<div class="data-table">
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Channel</th>
-                <th>Category</th>
-                <th>Views</th>
-                <th>Likes</th>
-                <th>Prediction</th>
+                <th>#</th>
+                <th>📺 Title</th>
+                <th>👤 Channel</th>
+                <th>📁 Category</th>
+                <th>👁️ Views</th>
+                <th>👍 Likes</th>
+                <th>💬 Comments</th>
+                <th>🎯 Prediction</th>
             </tr>
         </thead>
         <tbody>
             {% for obj in list_objects %}
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ obj.title|truncatewords:5 }}</td>
+                <td><strong>{{ forloop.counter }}</strong></td>
+                <td>{{ obj.title|truncatewords:8 }}</td>
                 <td>{{ obj.channel_title }}</td>
                 <td>{{ obj.category }}</td>
-                <td>{{ obj.views }}</td>
-                <td>{{ obj.likes }}</td>
+                <td>{{ obj.views|format_number }}</td>
+                <td>{{ obj.likes|format_number }}</td>
+                <td>{{ obj.comments|format_number }}</td>
                 <td>
                     {% if obj.Prediction == 'True Content' %}
-                    <span style="color: green; font-weight: bold;">✓ {{ obj.Prediction }}</span>
+                    <span class="badge-safe">✓ Safe Content</span>
                     {% else %}
-                    <span style="color: red; font-weight: bold;">⚠ {{ obj.Prediction }}</span>
+                    <span class="badge-false">⚠ False Content</span>
                     {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <p style="text-align: center;">No predictions available yet.</p>
-    {% endif %}
 </div>
+{% else %}
+<div class="data-table">
+    <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No Predictions Available Yet</h3>
+        <p>Predictions will appear here once users analyze YouTube videos.</p>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -3,6 +3,25 @@
 ## 🌐 SERVER STATUS
 ✅ Server Running at: http://127.0.0.1:8000/
 
+## ⚡ NEW AUTO-FETCH FEATURE!
+
+### How It Works:
+1. **Paste YouTube Link** - Just paste any YouTube video URL
+2. **Wait 1-2 Seconds** - The system automatically fetches video data
+3. **Auto-Fill Magic** ✨ - All fields (title, views, likes, dislikes, comments) fill automatically
+4. **Click Analyze** - Review the auto-filled data and click "Analyze Content with AI"
+
+### Without API Key (Manual Mode):
+- If YouTube API is not configured, you can still manually enter the data
+- The system will guide you on which fields to fill
+
+### With API Key (Auto Mode):
+1. Get your API key from https://console.cloud.google.com/
+2. Enable YouTube Data API v3
+3. Add your API key to `config.py`
+4. Restart the server
+5. Enjoy automatic data fetching! 🚀
+
 ## 🔑 DEMO CREDENTIALS
 
 ### 👤 USER LOGIN (Option 1)

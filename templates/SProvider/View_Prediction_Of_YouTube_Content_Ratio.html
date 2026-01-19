@@ -1,38 +1,237 @@
 {% extends 'base.html' %}
 
-{% block title %}Content Ratio{% endblock %}
+{% block title %}Admin Dashboard - Analytics{% endblock %}
 
 {% block content %}
-<div class="card">
-    <h2 style="text-align: center; margin-bottom: 2rem;">Prediction Ratio Analysis</h2>
-    
-    <div style="text-align: center; margin-bottom: 1rem;">
-        <a href="{% url 'View_Remote_Users' %}" class="btn">View Users</a>
-        <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="btn">View Predictions</a>
-        <a href="{% url 'charts' 'bar' %}" class="btn">View Bar Chart</a>
-        <a href="{% url 'charts' 'pie' %}" class="btn">View Pie Chart</a>
-        <a href="{% url 'index' %}" class="btn" style="background-color: #e74c3c;">Logout</a>
-    </div>
-    
-    {% if objs %}
-    <table style="max-width: 600px; margin: 2rem auto;">
-        <thead>
-            <tr>
-                <th>Content Type</th>
-                <th>Ratio (%)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for obj in objs %}
-            <tr>
-                <td><strong>{{ obj.names }}</strong></td>
-                <td>{{ obj.ratio|floatformat:2 }}%</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p style="text-align: center;">No data available. Please make some predictions first.</p>
-    {% endif %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(74, 144, 226, 0.15) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
+    }
+    .admin-header h1 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .admin-header p {
+        color: #e0e0e0 !important;
+    }
+    .admin-nav {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .nav-btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .nav-btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+    .nav-btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(52,152,219,0.3);
+    }
+    .nav-btn-active {
+        background-color: #2ecc71;
+        color: white;
+    }
+    .nav-btn-danger {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .nav-btn-danger:hover {
+        background-color: #c0392b;
+    }
+    .chart-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+    .chart-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        background-color: #9b59b6;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .chart-btn:hover {
+        background-color: #8e44ad;
+        transform: translateY(-2px);
+    }
+    .ratio-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .ratio-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+    }
+    .ratio-item {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid #ecf0f1;
+        transition: background-color 0.3s ease;
+    }
+    .ratio-item:last-child {
+        border-bottom: none;
+    }
+    .ratio-item:hover {
+        background-color: #f8f9fa;
+    }
+    .ratio-label {
+        flex: 1;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: 0.3px;
+    }
+    .ratio-label.safe {
+        color: #7bed9f;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .ratio-label.false {
+        color: #ff7979;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .ratio-bar-container {
+        flex: 2;
+        background-color: #ecf0f1;
+        border-radius: 20px;
+        height: 30px;
+        margin: 0 1rem;
+        overflow: hidden;
+        position: relative;
+    }
+    .ratio-bar {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+        color: white;
+        font-weight: 600;
+    }
+    .ratio-bar.safe {
+        background: linear-gradient(90deg, rgba(81, 207, 102, 0.6), rgba(64, 192, 87, 0.8));
+    }
+    .ratio-bar.false {
+        background: linear-gradient(90deg, rgba(255, 107, 107, 0.6), rgba(238, 90, 82, 0.8));
+    }
+    .ratio-value {
+        font-weight: 800;
+        font-size: 1.3rem;
+        min-width: 90px;
+        text-align: right;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #95a5a6;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="admin-header">
+    <h1 style="margin: 0; font-size: 2rem;">📊 Admin Dashboard</h1>
+    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Manage users, predictions, and analytics</p>
 </div>
+
+<nav class="admin-nav">
+    <a href="{% url 'View_Remote_Users' %}" class="nav-btn nav-btn-primary">
+        👥 Registered Users
+    </a>
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="nav-btn nav-btn-primary">
+        🔍 View Predictions
+    </a>
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="nav-btn nav-btn-active">
+        📈 Analytics & Ratios
+    </a>
+    <a href="{% url 'train_model' %}" class="nav-btn nav-btn-primary">
+        🤖 Train ML Model
+    </a>
+    <a href="{% url 'index' %}" class="nav-btn nav-btn-danger">
+        🚪 Logout
+    </a>
+</nav>
+
+<div class="chart-buttons">
+    <a href="{% url 'charts' 'bar' %}" class="chart-btn">📊 View Bar Chart</a>
+    <a href="{% url 'charts' 'pie' %}" class="chart-btn">🥧 View Pie Chart</a>
+</div>
+
+{% if objs %}
+<div class="ratio-container">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #2c3e50;">📊 Content Distribution Analysis</h2>
+    
+    <div class="ratio-card">
+        {% for obj in objs %}
+        <div class="ratio-item">
+            <div class="ratio-label {% if 'True' in obj.names %}safe{% else %}false{% endif %}">
+                {% if 'True' in obj.names %}
+                ✓ {{ obj.names }}
+                {% else %}
+                ⚠ {{ obj.names }}
+                {% endif %}
+            </div>
+            <div class="ratio-bar-container">
+                <div class="ratio-bar {% if 'True' in obj.names %}safe{% else %}false{% endif %}" 
+                     style="width: {{ obj.ratio }}%">
+                    <span>{{ obj.ratio|floatformat:1 }}%</span>
+                </div>
+            </div>
+            <div class="ratio-value">{{ obj.ratio|floatformat:2 }}%</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <h3>No Analytics Data Available</h3>
+    <p>Analytics will appear here once users make predictions.</p>
+    <p style="margin-top: 1rem;">
+        <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" style="color: #3498db; text-decoration: none; font-weight: 600;">
+            View Predictions →
+        </a>
+    </p>
+</div>
+{% endif %}
 {% endblock %}

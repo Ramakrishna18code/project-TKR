@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Count, Avg, Q
-from Remote_User.models import ClientRegister_Model, content_detection_type, detection_ratio, detection_accuracy
+from Remote_User.models import ClientRegister_Model, content_detection_type
+from .models import detection_ratio, detection_accuracy
 
 
 def serviceproviderlogin(request):
@@ -24,7 +25,20 @@ def View_Remote_Users(request):
 def View_Prediction_Of_YouTube_Content_Type(request):
     """View all predictions"""
     predictions = content_detection_type.objects.all()
-    return render(request, 'SProvider/View_Prediction_Of_YouTube_Content_Type.html', {'list_objects': predictions})
+    
+    # Calculate statistics
+    total_count = predictions.count()
+    safe_count = predictions.filter(Prediction='True Content').count()
+    false_count = predictions.filter(Prediction='False Content').count()
+    
+    context = {
+        'list_objects': predictions,
+        'total_count': total_count,
+        'safe_count': safe_count,
+        'false_count': false_count
+    }
+    
+    return render(request, 'SProvider/View_Prediction_Of_YouTube_Content_Type.html', context)
 
 
 def View_Prediction_Of_YouTube_Content_Ratio(request):
