@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Dashboard - ML Accuracy Chart{% endblock %}
+{% block title %}Admin - ML Accuracy{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -9,87 +9,75 @@
 {% block content %}
 <style>
     .admin-header {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(74, 144, 226, 0.15) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        color: white;
-        padding: 2rem;
-        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-left: 3px solid #1a1a1a;
+        padding: 1.5rem;
+        border-radius: 6px;
         margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
     }
     .admin-header h1 {
-        color: #ffffff !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+        font-size: 1.5rem;
     }
     .admin-header p {
-        color: #e0e0e0 !important;
+        color: #737373;
+        margin: 0;
+        font-size: 0.9375rem;
     }
     .chart-controls {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-bottom: 2rem;
         flex-wrap: wrap;
         justify-content: center;
     }
     .chart-btn {
-        padding: 10px 20px;
-        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
         text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        border: 1px solid #d4d4d4;
+        background: #ffffff;
+        color: #1a1a1a;
+        font-size: 0.9375rem;
     }
-    .chart-btn-back {
-        background: rgba(149, 165, 166, 0.2);
-        border: 1px solid rgba(149, 165, 166, 0.3);
-        color: #b0b0b0;
-    }
-    .chart-btn-back:hover {
-        background: rgba(149, 165, 166, 0.3);
-        color: #ffffff;
-    }
-    .chart-btn-type {
-        background: rgba(160, 94, 255, 0.2);
-        border: 1px solid rgba(160, 94, 255, 0.3);
-        color: #b896ff;
-    }
-    .chart-btn-type:hover {
-        background: rgba(160, 94, 255, 0.3);
-        color: #ffffff;
-        transform: translateY(-2px);
+    .chart-btn:hover {
+        background: #f5f5f5;
+        border-color: #a3a3a3;
     }
     .chart-btn-active {
-        background: linear-gradient(135deg, #51CF66 0%, #40C057 100%);
-        border-color: transparent;
+        background: #1a1a1a;
         color: #ffffff;
-        box-shadow: 0 4px 12px rgba(81, 207, 102, 0.4);
+        border-color: #1a1a1a;
     }
     .chart-container {
-        background: rgba(18, 18, 35, 0.6);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(74, 144, 226, 0.2);
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border-radius: 6px;
         max-width: 1000px;
         margin: 0 auto;
     }
     .chart-info {
-        background: rgba(160, 94, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(160, 94, 255, 0.3);
-        padding: 1.5rem;
-        border-radius: 12px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-left: 3px solid #3b82f6;
+        padding: 1.25rem;
+        border-radius: 6px;
         margin-bottom: 2rem;
-        border-left: 4px solid #A05EFF;
     }
     .chart-info h3 {
-        color: #ffffff !important;
+        color: #1e40af;
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
     }
     .chart-info p {
-        color: #d0d0d0 !important;
+        color: #1e40af;
+        margin: 0;
+        font-size: 0.9375rem;
     }
     .algorithm-legend {
         display: grid;
@@ -98,64 +86,61 @@
         margin-bottom: 2rem;
     }
     .legend-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(74, 144, 226, 0.2);
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
         padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-        border-left: 4px solid;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         gap: 0.75rem;
     }
     .legend-icon {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         border-radius: 3px;
     }
     .legend-name {
-        font-weight: 700;
-        color: #ffffff;
-        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.9375rem;
+        flex: 1;
     }
     .accuracy-badge {
-        margin-left: auto;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 700;
+        padding: 0.25rem 0.625rem;
+        border-radius: 4px;
+        font-size: 0.8125rem;
+        font-weight: 600;
     }
-    .badge-high { background: #d4edda; color: #155724; }
-    .badge-medium { background: #fff3cd; color: #856404; }
-    .badge-low { background: #f8d7da; color: #721c24; }
+    .badge-high { background: #dcfce7; color: #166534; }
+    .badge-medium { background: #fef3c7; color: #92400e; }
+    .badge-low { background: #fee2e2; color: #991b1b; }
 </style>
 
 <div class="admin-header">
-    <h1 style="margin: 0; font-size: 2rem;">🤖 Machine Learning Performance</h1>
-    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Algorithm accuracy comparison and analysis</p>
+    <h1>Machine Learning Performance</h1>
+    <p>Algorithm accuracy comparison</p>
 </div>
 
 <div class="chart-controls">
-    <a href="{% url 'train_model' %}" class="chart-btn chart-btn-back">
-        ← Back to Training
+    <a href="{% url 'train_model' %}" class="chart-btn">
+        Back to Training
     </a>
-    <a href="{% url 'charts1' 'bar' %}" class="chart-btn chart-btn-type {% if chart_type == 'bar' %}chart-btn-active{% endif %}">
-        📊 Bar Chart
+    <a href="{% url 'charts1' 'bar' %}" class="chart-btn {% if chart_type == 'bar' %}chart-btn-active{% endif %}">
+        Bar Chart
     </a>
-    <a href="{% url 'charts1' 'line' %}" class="chart-btn chart-btn-type {% if chart_type == 'line' %}chart-btn-active{% endif %}">
-        📈 Line Chart
+    <a href="{% url 'charts1' 'line' %}" class="chart-btn {% if chart_type == 'line' %}chart-btn-active{% endif %}">
+        Line Chart
     </a>
 </div>
 
 <div class="chart-info">
-    <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50;">🎯 Model Performance Metrics</h3>
-    <p style="margin: 0; color: #34495e;">
-        This chart compares the accuracy of different machine learning algorithms trained on the YouTube content dataset. 
+    <h3>Model Performance Analysis</h3>
+    <p>
+        Accuracy comparison of machine learning algorithms.
         {% if chart_type == 'bar' %}
-        <strong>Bar Chart</strong> clearly shows which algorithm performs best.
+        Bar chart clearly shows which algorithm performs best.
         {% else %}
-        <strong>Line Chart</strong> visualizes the accuracy trend across all models.
+        Line chart visualizes accuracy trend across models.
         {% endif %}
         Higher percentages indicate better prediction accuracy.
     </p>
@@ -164,16 +149,16 @@
 <div class="chart-container">
     <div class="algorithm-legend">
         {% for item in form %}
-        <div class="legend-card" style="border-left-color: 
-            {% if forloop.counter0 == 0 %}#3498db
-            {% elif forloop.counter0 == 1 %}#f39c12
-            {% elif forloop.counter0 == 2 %}#2ecc71
-            {% else %}#9b59b6{% endif %};">
+        <div class="legend-card" style="border-left: 3px solid 
+            {% if forloop.counter0 == 0 %}#3b82f6
+            {% elif forloop.counter0 == 1 %}#f59e0b
+            {% elif forloop.counter0 == 2 %}#22c55e
+            {% else %}#8b5cf6{% endif %};">
             <div class="legend-icon" style="background: 
-                {% if forloop.counter0 == 0 %}#3498db
-                {% elif forloop.counter0 == 1 %}#f39c12
-                {% elif forloop.counter0 == 2 %}#2ecc71
-                {% else %}#9b59b6{% endif %};"></div>
+                {% if forloop.counter0 == 0 %}#3b82f6
+                {% elif forloop.counter0 == 1 %}#f59e0b
+                {% elif forloop.counter0 == 2 %}#22c55e
+                {% else %}#8b5cf6{% endif %};"></div>
             <span class="legend-name">{{ item.names }}</span>
             <span class="accuracy-badge {% if item.dcount >= 90 %}badge-high{% elif item.dcount >= 75 %}badge-medium{% else %}badge-low{% endif %}">
                 {{ item.dcount }}%
@@ -192,12 +177,11 @@
     const labels = [{% for item in form %}'{{ item.names }}',{% endfor %}];
     const data = [{% for item in form %}{{ item.dcount|default:0 }},{% endfor %}];
     
-    // Professional color scheme for ML algorithms
     const algorithmColors = [
-        { bg: 'rgba(52, 152, 219, 0.7)', border: 'rgba(41, 128, 185, 1)' },  // Blue
-        { bg: 'rgba(243, 156, 18, 0.7)', border: 'rgba(211, 84, 0, 1)' },    // Orange
-        { bg: 'rgba(46, 204, 113, 0.7)', border: 'rgba(39, 174, 96, 1)' },   // Green
-        { bg: 'rgba(155, 89, 182, 0.7)', border: 'rgba(142, 68, 173, 1)' }   // Purple
+        { bg: 'rgba(59, 130, 246, 0.7)', border: 'rgba(37, 99, 235, 1)' },
+        { bg: 'rgba(245, 158, 11, 0.7)', border: 'rgba(217, 119, 6, 1)' },
+        { bg: 'rgba(34, 197, 94, 0.7)', border: 'rgba(22, 163, 74, 1)' },
+        { bg: 'rgba(139, 92, 246, 0.7)', border: 'rgba(124, 58, 237, 1)' }
     ];
     
     const backgroundColors = data.map((_, index) => 
@@ -216,22 +200,22 @@
                 label: 'Model Accuracy',
                 data: data,
                 backgroundColor: '{{ chart_type }}' === 'line' 
-                    ? 'rgba(155, 89, 182, 0.1)' 
+                    ? 'rgba(139, 92, 246, 0.1)' 
                     : backgroundColors,
                 borderColor: '{{ chart_type }}' === 'line' 
-                    ? 'rgba(142, 68, 173, 1)' 
+                    ? 'rgba(124, 58, 237, 1)' 
                     : borderColors,
                 borderWidth: 3,
                 {% if chart_type == 'line' %}
                 fill: true,
                 tension: 0.4,
-                pointRadius: 6,
-                pointHoverRadius: 8,
+                pointRadius: 5,
+                pointHoverRadius: 7,
                 pointBackgroundColor: borderColors,
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2
                 {% else %}
-                borderRadius: 8,
+                borderRadius: 6,
                 borderSkipped: false
                 {% endif %}
             }]
@@ -241,27 +225,27 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false  // Using custom legend above
+                    display: false
                 },
                 title: {
                     display: true,
                     text: 'Algorithm Performance Comparison',
                     font: {
-                        size: 20,
+                        size: 16,
                         weight: 'bold'
                     },
                     padding: 20,
-                    color: '#2c3e50'
+                    color: '#1a1a1a'
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                    padding: 15,
+                    padding: 12,
                     titleFont: {
-                        size: 15,
+                        size: 14,
                         weight: 'bold'
                     },
                     bodyFont: {
-                        size: 14
+                        size: 13
                     },
                     callbacks: {
                         label: function(context) {
@@ -270,15 +254,6 @@
                                 label += ': ';
                             }
                             label += context.parsed.y.toFixed(2) + '%';
-                            
-                            // Add performance indicator
-                            if (context.parsed.y >= 90) {
-                                label += ' (Excellent ⭐⭐⭐)';
-                            } else if (context.parsed.y >= 80) {
-                                label += ' (Very Good ⭐⭐)';
-                            } else if (context.parsed.y >= 70) {
-                                label += ' (Good ⭐)';
-                            }
                             return label;
                         }
                     }
@@ -293,7 +268,7 @@
                             return value + '%';
                         },
                         font: {
-                            size: 13
+                            size: 12
                         }
                     },
                     grid: {
@@ -304,10 +279,10 @@
                         display: true,
                         text: 'Accuracy Percentage (%)',
                         font: {
-                            size: 14,
+                            size: 13,
                             weight: 'bold'
                         },
-                        color: '#7f8c8d'
+                        color: '#737373'
                     }
                 },
                 x: {
@@ -324,10 +299,10 @@
                         display: true,
                         text: 'Machine Learning Algorithms',
                         font: {
-                            size: 14,
+                            size: 13,
                             weight: 'bold'
                         },
-                        color: '#7f8c8d'
+                        color: '#737373'
                     }
                 }
             }

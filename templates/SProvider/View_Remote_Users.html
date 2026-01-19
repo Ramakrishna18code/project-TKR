@@ -1,167 +1,148 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Dashboard - Users{% endblock %}
+{% block title %}Admin - Users{% endblock %}
 
 {% block content %}
 <style>
     .admin-header {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(74, 144, 226, 0.15) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        color: white;
-        padding: 2rem;
-        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-left: 3px solid #1a1a1a;
+        padding: 1.5rem;
+        border-radius: 6px;
         margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
     }
     .admin-header h1 {
-        color: #ffffff !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+        font-size: 1.5rem;
     }
     .admin-header p {
-        color: #e0e0e0 !important;
+        color: #737373;
+        margin: 0;
+        font-size: 0.9375rem;
     }
     .admin-nav {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-bottom: 2rem;
         flex-wrap: wrap;
-        justify-content: center;
     }
     .nav-btn {
-        padding: 12px 24px;
-        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
         text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        border: 1px solid #d4d4d4;
+        background: #ffffff;
+        color: #1a1a1a;
+        font-size: 0.9375rem;
     }
-    .nav-btn-primary {
-        background: rgba(74, 144, 226, 0.15);
-        border: 1px solid rgba(74, 144, 226, 0.3);
-        color: #4A90E2;
-    }
-    .nav-btn-primary:hover {
-        background: rgba(74, 144, 226, 0.25);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(74,144,226,0.3);
+    .nav-btn:hover {
+        background: #f5f5f5;
+        border-color: #a3a3a3;
     }
     .nav-btn-active {
-        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        background: #1a1a1a;
+        color: #ffffff;
+        border-color: #1a1a1a;
     }
     .nav-btn-danger {
-        background-color: #e74c3c;
-        color: white;
+        background: #ffffff;
+        color: #dc2626;
+        border-color: #dc2626;
     }
     .nav-btn-danger:hover {
-        background-color: #c0392b;
+        background: #dc2626;
+        color: #ffffff;
     }
     .stats-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
+        gap: 1rem;
         margin-bottom: 2rem;
     }
     .stat-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 1.5rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        text-align: center;
-        border-left: 3px solid #4A90E2;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        padding: 1.25rem;
+        border-radius: 6px;
+        border-left: 3px solid #3b82f6;
     }
     .stat-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #3498db;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
         margin: 0;
     }
     .stat-label {
-        color: #7f8c8d;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
+        color: #737373;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
     }
     .data-table {
-        background: rgba(18, 18, 35, 0.6);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(74, 144, 226, 0.2);
-        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
         overflow: hidden;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
     .data-table table {
         width: 100%;
         border-collapse: collapse;
     }
     .data-table thead {
-        background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(160, 94, 255, 0.3) 100%);
-        border-bottom: 2px solid rgba(74, 144, 226, 0.5);
+        background: #fafaf9;
+        border-bottom: 1px solid #e5e5e5;
     }
     .data-table th {
-        padding: 1rem;
+        padding: 0.875rem;
         text-align: left;
-        font-weight: 700;
-        color: #ffffff;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.875rem;
     }
     .data-table td {
-        padding: 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        color: #ffffff;
-        font-size: 0.95rem;
-    }
-    .data-table tbody tr {
-        background: rgba(255, 255, 255, 0.02);
-        transition: all 0.3s ease;
-    }
-    .data-table tbody tr:nth-child(even) {
-        background: rgba(255, 255, 255, 0.04);
+        padding: 0.875rem;
+        border-bottom: 1px solid #e5e5e5;
+        color: #404040;
+        font-size: 0.9375rem;
     }
     .data-table tbody tr:hover {
-        background-color: rgba(74, 144, 226, 0.15);
-        transform: translateX(4px);
+        background: #fafaf9;
     }
     .empty-state {
         text-align: center;
         padding: 3rem;
-        color: #95a5a6;
+        color: #737373;
     }
-    .empty-state-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
+    .empty-state h3 {
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
     }
 </style>
 
 <div class="admin-header">
-    <h1 style="margin: 0; font-size: 2rem;">📊 Admin Dashboard</h1>
-    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Manage users, predictions, and analytics</p>
+    <h1>Administration</h1>
+    <p>User management and system oversight</p>
 </div>
 
 <nav class="admin-nav">
     <a href="{% url 'View_Remote_Users' %}" class="nav-btn nav-btn-active">
-        👥 Registered Users
+        Registered Users
     </a>
-    <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="nav-btn nav-btn-primary">
-        🔍 View Predictions
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Type' %}" class="nav-btn">
+        Predictions
     </a>
-    <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="nav-btn nav-btn-primary">
-        📈 Analytics & Ratios
+    <a href="{% url 'View_Prediction_Of_YouTube_Content_Ratio' %}" class="nav-btn">
+        Analytics
     </a>
-    <a href="{% url 'train_model' %}" class="nav-btn nav-btn-primary">
-        🤖 Train ML Model
+    <a href="{% url 'train_model' %}" class="nav-btn">
+        Model Training
     </a>
     <a href="{% url 'index' %}" class="nav-btn nav-btn-danger">
-        🚪 Logout
+        Sign Out
     </a>
 </nav>
 
@@ -177,13 +158,13 @@
     <table>
         <thead>
             <tr>
-                <th>#</th>
-                <th>👤 Username</th>
-                <th>📧 Email</th>
-                <th>📱 Phone</th>
-                <th>🏙️ City</th>
-                <th>🗺️ State</th>
-                <th>🌍 Country</th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Country</th>
             </tr>
         </thead>
         <tbody>
@@ -202,9 +183,8 @@
     </table>
     {% else %}
     <div class="empty-state">
-        <div class="empty-state-icon">👤</div>
-        <h3>No Users Registered Yet</h3>
-        <p>Users will appear here once they register in the system.</p>
+        <h3>No Users Registered</h3>
+        <p>Users will appear here once they register.</p>
     </div>
     {% endif %}
 </div>
