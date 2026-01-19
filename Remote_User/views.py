@@ -3,22 +3,31 @@ from django.db.models import Q
 from .models import ClientRegister_Model, content_detection_type
 from Service_Provider.models import detection_ratio, detection_accuracy
 from .forms import ClientRegister_Form
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
-from sklearn import svm
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import VotingClassifier
 import re
-from googleapiclient.discovery import build
 from datetime import datetime
 import os
 import sys
 
 # Add parent directory to path to import config
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Lazy import heavy libraries only when needed
+def lazy_import_ml_libs():
+    """Import heavy ML libraries only when needed to save memory"""
+    import pandas as pd
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.model_selection import train_test_split
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn import svm
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.ensemble import VotingClassifier
+    return pd, CountVectorizer, train_test_split, MultinomialNB, svm, LogisticRegression, DecisionTreeClassifier, VotingClassifier
+
+def lazy_import_youtube_api():
+    """Import YouTube API only when needed"""
+    from googleapiclient.discovery import build
+    return build
 
 
 def index(request):
