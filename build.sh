@@ -9,10 +9,11 @@ pip install -r requirements-render.txt
 echo "Setting RENDER environment variable..."
 export RENDER=true
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
 echo "Running migrations..."
+python manage.py makemigrations --noinput
 python manage.py migrate --noinput
+
+echo "Collecting static files..."
+python manage.py collectstatic --noinput --clear
 
 echo "Build completed successfully!"
