@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: youtube-content-detection
+    env: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn content_detection.wsgi:application -c gunicorn.conf.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: WEB_CONCURRENCY
+        value: 1
+      - key: RENDER
+        value: true

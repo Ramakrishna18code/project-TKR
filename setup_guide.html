@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube API Setup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .step:hover {
+            transform: translateX(10px);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 15px;
+            float: left;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .step p, .step li {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .step ul {
+            margin-left: 20px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin: 10px 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .links {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 YouTube API Setup Guide</h1>
+            <p>Get automatic data fetching in 5 minutes!</p>
+        </div>
+        
+        <div class="content">
+            <div class="warning-box">
+                <strong>⚡ Why You Need This:</strong><br>
+                Without API configuration, you have to enter views, likes, dislikes manually.<br>
+                <strong>With API:</strong> Just paste the link and ALL data is fetched automatically! ✨
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Go to Google Cloud Console</h3>
+                <p>Open this link in a new tab:</p>
+                <a href="https://console.cloud.google.com/" target="_blank" class="btn">
+                    Open Google Cloud Console
+                </a>
+                <p style="margin-top: 15px;">You'll need to sign in with your Google account.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Create a New Project</h3>
+                <ul>
+                    <li>Click "<strong>Select a project</strong>" at the top of the page</li>
+                    <li>Click "<strong>NEW PROJECT</strong>" button</li>
+                    <li>Project Name: <span class="highlight">YouTube Content Detection</span></li>
+                    <li>Click "<strong>CREATE</strong>" button</li>
+                    <li>Wait a few seconds for it to create</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Enable YouTube Data API v3</h3>
+                <ul>
+                    <li>In the search bar at the top, type: <span class="highlight">YouTube Data API v3</span></li>
+                    <li>Click on "<strong>YouTube Data API v3</strong>" from results</li>
+                    <li>Click the big blue "<strong>ENABLE</strong>" button</li>
+                    <li>Wait for it to enable (takes 5-10 seconds)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Create API Key</h3>
+                <ul>
+                    <li>Click "<strong>CREATE CREDENTIALS</strong>" button</li>
+                    <li>Select "<strong>API Key</strong>" option</li>
+                    <li><strong>COPY</strong> the generated API key (it looks like: AIzaSyDxxxxxxxxx...)</li>
+                    <li>Click "<strong>CLOSE</strong>"</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <h3>Add API Key to config.py</h3>
+                <p>Open this file in your project:</p>
+                <div class="code-block">
+C:\Users\reddy\OneDrive\Desktop\project file\config.py
+                </div>
+                <p>Replace this line:</p>
+                <div class="code-block">
+YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY_HERE'
+                </div>
+                <p>With your actual API key:</p>
+                <div class="code-block">
+YOUTUBE_API_KEY = 'AIzaSyDxxxxxxxxxxxxxxxxxxxxxxxxxx'  # Paste your key here
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <h3>Restart Django Server</h3>
+                <p>In your terminal/PowerShell:</p>
+                <ul>
+                    <li>Press <span class="highlight">CTRL + C</span> to stop the server</li>
+                    <li>Run the server again:</li>
+                </ul>
+                <div class="code-block">
+python manage.py runserver
+                </div>
+            </div>
+            
+            <div class="success-box">
+                ✅ DONE! Now you can paste ONLY the YouTube link and all data will be fetched automatically!
+            </div>
+            
+            <div class="step">
+                <div class="step-number">7</div>
+                <h3>Test It!</h3>
+                <p>Go to your application and test with ANY YouTube video:</p>
+                <a href="http://127.0.0.1:8000/Predict_YouTube_Content_Type/" target="_blank" class="btn btn-primary">
+                    Test YouTube Content Detection
+                </a>
+                <p style="margin-top: 15px;">Try this video link:</p>
+                <div class="code-block">
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+                </div>
+                <p><strong>You'll see:</strong> Title, Channel, Views, Likes, Dislikes, Comments - ALL AUTO-FILLED! 🎉</p>
+            </div>
+        </div>
+        
+        <div class="links">
+            <h3 style="margin-bottom: 20px;">Quick Links</h3>
+            <a href="https://console.cloud.google.com/" target="_blank" class="btn">Google Cloud Console</a>
+            <a href="http://127.0.0.1:8000/" target="_blank" class="btn btn-primary">Your Application</a>
+        </div>
+    </div>
+</body>
+</html>
