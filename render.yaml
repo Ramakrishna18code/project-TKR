@@ -2,7 +2,7 @@ services:
   - type: web
     name: youtube-content-detection
     env: python
-    buildCommand: pip install -r requirements-render.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    buildCommand: bash build.sh
     startCommand: gunicorn content_detection.wsgi:application -c gunicorn.conf.py
     envVars:
       - key: PYTHON_VERSION
@@ -13,3 +13,5 @@ services:
         value: False
       - key: WEB_CONCURRENCY
         value: 1
+      - key: RENDER
+        value: true

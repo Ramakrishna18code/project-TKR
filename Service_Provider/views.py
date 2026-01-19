@@ -10,7 +10,12 @@ def serviceproviderlogin(request):
         admin = request.POST.get('username')
         password = request.POST.get('password')
         if admin == "Admin" and password == "Admin":
-            detection_accuracy.objects.all().delete()
+            try:
+                detection_accuracy.objects.all().delete()
+            except Exception as e:
+                # Handle case where table doesn't exist yet
+                print(f"Warning: Could not delete detection_accuracy: {e}")
+                pass
             return redirect('View_Remote_Users')
     
     return render(request, 'SProvider/serviceproviderlogin.html')
