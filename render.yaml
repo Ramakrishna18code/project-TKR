@@ -3,7 +3,7 @@ services:
     name: youtube-content-detection
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn content_detection.wsgi:application
+    startCommand: gunicorn content_detection.wsgi:application -c gunicorn.conf.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
@@ -11,3 +11,5 @@ services:
         generateValue: true
       - key: DEBUG
         value: False
+      - key: WEB_CONCURRENCY
+        value: 1
